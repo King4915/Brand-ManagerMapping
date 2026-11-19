@@ -124,6 +124,27 @@ main{padding:16px 0 60px}
 .mini.fu.over{color:var(--red)}
 .empty{padding:48px 20px;text-align:center;color:var(--sub);font-size:14px}
 .empty b{display:block;font-size:16px;color:var(--ink);margin-bottom:6px}
+/* AI discovery and review */
+.ai-intro{padding:14px 16px;border:1px solid #c7d2fe;background:linear-gradient(135deg,#f5f6ff,#fbfaff);border-radius:14px;color:#4b5563;font-size:13px;margin-bottom:14px}
+.ai-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:16px}
+.ai-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.ai-field.full{grid-column:1/-1}
+.ai-field label{font-size:12px;font-weight:700;color:#596274}
+.ai-field input,.ai-field select,.ai-field textarea{width:100%;border:1px solid var(--line);border-radius:10px;background:#fff;padding:10px 12px;outline:none;font-size:14px}
+.ai-field textarea{min-height:78px;resize:vertical}
+.ai-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:0 16px 16px}
+.ai-status{font-size:12px;color:var(--sub);min-height:20px}
+.ai-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-top:12px}
+.ai-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px;box-shadow:var(--shadow);min-width:0}
+.ai-card h3{font-size:15px;margin-bottom:4px}
+.ai-card .ai-role{font-size:13px;color:var(--sub)}
+.ai-card .ai-summary{font-size:13px;margin:10px 0;color:#3f4655;line-height:1.65}
+.ai-card .ai-meta{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.ai-source{border-top:1px solid var(--line);padding-top:9px;margin-top:10px;font-size:12px;color:var(--sub)}
+.ai-source a{display:block;color:var(--brand);overflow-wrap:anywhere;margin-top:4px}
+.ai-card .ai-actions{padding:12px 0 0}
+.ai-confidence{font-size:11px;border-radius:99px;padding:3px 8px;background:var(--amber-soft);color:#9a6410;font-weight:700}
+@media(max-width:650px){.ai-form{grid-template-columns:1fr}.ai-field.full{grid-column:auto}.ai-list{grid-template-columns:1fr}}
 /* SECTION: updates view */
 .upd-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
 .upd-meta .info{font-size:13px;color:var(--sub);flex:1;min-width:200px}
@@ -383,6 +404,7 @@ main{padding-top:22px}
       <button data-view="list">人选列表</button>
       <button data-view="updates">动态记录</button>
       <button data-view="todo">跟进待办 <span class="tab-badge" id="todoBadge" style="display:none"></span></button>
+      <button data-view="ai">AI 寻访 <span class="tab-badge" id="aiBadge" style="display:none"></span></button>
     </nav>
   </div>
 </header>
@@ -445,6 +467,25 @@ main{padding-top:22px}
       <div class="panel-hd"><h2>跟进待办</h2><span class="hint">建联时选择“3个月后跟进”的人选会出现在这里，到期自动标红提醒</span></div>
       <div id="todoList"></div>
       <div class="empty" id="todoEmpty" style="display:none"><b>暂无待跟进人选</b>在人选卡片的“建联记录”里点击“3个月后跟进”即可创建</div>
+    </div>
+  </section>
+
+  <section class="view" id="view-ai">
+    <div class="ai-intro">AI 仅根据公开网页生成候选线索，并附上来源。建议不会自动进入正式人选或修改组织架构；你确认后才加入 Mapping。私人联系方式、薪酬、意向和简历仍由 HR 维护。</div>
+    <div class="panel">
+      <div class="panel-hd"><h2>AI 寻访</h2><span class="hint">选择 Mapping 公司并输入目标职位，AI 将整理最多 3 条公开线索</span></div>
+      <div class="ai-form">
+        <div class="ai-field"><label for="aiCompany">Mapping 公司</label><select id="aiCompany"></select></div>
+        <div class="ai-field"><label for="aiTitles">目标职位</label><input id="aiTitles" placeholder="例如：品牌总监、市场副总裁"></div>
+        <div class="ai-field"><label for="aiDepartment">目标部门</label><input id="aiDepartment" placeholder="例如：品牌营销 / 数字营销"></div>
+        <div class="ai-field full"><label for="aiRequirements">补充要求（选填）</label><textarea id="aiRequirements" placeholder="例如：消费品行业经验、管理团队经验；不需要填写隐私信息"></textarea></div>
+      </div>
+      <div class="ai-actions"><button class="btn primary" id="aiRunBtn">开始公开信息寻访</button><span class="ai-status" id="aiRunStatus"></span></div>
+    </div>
+    <div class="panel" style="margin-top:16px">
+      <div class="panel-hd"><h2>待确认人选</h2><span class="hint">核实姓名、职位和来源后，再加入正式人才库</span><button class="btn ghost small" id="aiRefreshBtn">刷新列表</button></div>
+      <div id="aiQueue" class="ai-list" style="padding:14px"></div>
+      <div class="empty" id="aiQueueEmpty" style="display:none"><b>目前没有待确认人选</b>点击上方“开始公开信息寻访”生成候选建议</div>
     </div>
   </section>
 </main>
@@ -940,11 +981,12 @@ function queueRemoteSave(){
   remoteSaveTimer=setTimeout(syncChangedRecords,450);
 }
 async function syncChangedRecords(){
-  if(!DB||remoteSaving)return;
+  if(!DB)return false;
+  if(remoteSaving){await new Promise(function(resolve){setTimeout(resolve,500);});if(remoteSaving)return false;}
   var current=encodeRows(DB),next={};current.forEach(function(row){next[row.record_id]=JSON.stringify(row.payload);});
   var changed=current.filter(function(row){return remoteCache[row.record_id]!==next[row.record_id];});
   var deleted=Object.keys(remoteCache).filter(function(id){return !next[id];});
-  if(!changed.length&&!deleted.length)return;
+  if(!changed.length&&!deleted.length)return true;
   remoteSaving=true;
   try{
     if(changed.length){var upsert=await supabaseClient.schema('mapping').from('records').upsert(changed,{onConflict:'record_id'});if(upsert.error)throw upsert.error;}
@@ -952,7 +994,8 @@ async function syncChangedRecords(){
     current.forEach(function(row){remoteCache[row.record_id]=next[row.record_id];});
     deleted.forEach(function(id){delete remoteCache[id];});
     toast('已保存并同步到团队');
-  }catch(e){console.error(e);toast('云端保存失败，请检查登录权限后重试');}
+    return true;
+  }catch(e){console.error(e);toast('云端保存失败，请检查登录权限后重试');return false;}
   finally{remoteSaving=false;if(pendingRemoteReload){pendingRemoteReload=false;refreshFromRemote();}}
 }
 function save(){
@@ -1223,6 +1266,97 @@ function renderTodo(){
     list.appendChild(el);
   });
   document.getElementById('todoEmpty').style.display=rows.length?'none':'';
+}
+/* SECTION: AI public research queue */
+function htmlEscape(value){return String(value===null||value===undefined?'':value).replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];});}
+function renderAiCompanyOptions(){
+  var sel=document.getElementById('aiCompany');if(!sel)return;
+  var old=sel.value||state.company;sel.innerHTML='';
+  DB.companies.forEach(function(c){var o=document.createElement('option');o.value=c.id;o.textContent=c.name+(c.en?' '+c.en:'');sel.appendChild(o);});
+  sel.value=DB.companies.some(function(c){return c.id===old;})?old:(DB.companies[0]?DB.companies[0].id:'');
+}
+async function renderAiQueue(){
+  var box=document.getElementById('aiQueue');if(!box)return;
+  renderAiCompanyOptions();box.innerHTML='<div class="empty">正在读取待确认人选…</div>';
+  try{
+    var result=await supabaseClient.schema('mapping').from('ai_suggestions').select('*').eq('status','pending').order('created_at',{ascending:false}).limit(60);
+    if(result.error)throw result.error;
+    var rows=result.data||[];box.innerHTML='';
+    document.getElementById('aiQueueEmpty').style.display=rows.length?'none':'';
+    var badge=document.getElementById('aiBadge');badge.style.display=rows.length?'':'none';badge.textContent=rows.length;
+    rows.forEach(function(item){
+      var evidence=Array.isArray(item.evidence)?item.evidence:[];
+      var links=evidence.map(function(ev){var url=String(ev.url||'');if(!/^https:\/\//i.test(url))return '';return '<a href="'+htmlEscape(url)+'" target="_blank" rel="noopener">'+htmlEscape(ev.title||url)+(ev.published_at?' · '+htmlEscape(ev.published_at):'')+'</a>';}).filter(Boolean).join('');
+      var pct=item.confidence===null||item.confidence===undefined?'待评估':Math.round(Number(item.confidence)*100)+'%';
+      var card=document.createElement('article');card.className='ai-card';card.dataset.id=item.id;
+      card.innerHTML='<h3>'+htmlEscape(item.candidate_name||'待识别人选')+'</h3>'+ 
+        '<div class="ai-role">'+htmlEscape(item.current_company||item.target_company||'')+' · '+htmlEscape(item.current_title||'职位待核实')+'</div>'+ 
+        '<div class="ai-meta"><span class="ai-confidence">线索可信度 '+htmlEscape(pct)+'</span><span class="mini">'+htmlEscape(item.department||'部门待核实')+'</span></div>'+ 
+        '<p class="ai-summary">'+htmlEscape(item.summary||'暂无履历摘要')+'</p>'+ 
+        (item.fit_reason?'<p class="mini">匹配理由：'+htmlEscape(item.fit_reason)+'</p>':'')+ 
+        '<div class="ai-source"><b>公开来源</b>'+ (links||'<span>未提供可用来源链接，暂不建议采纳</span>')+'</div>'+ 
+        '<div class="ai-actions"><button class="btn primary small" data-ai-action="approve" '+(links?'':'disabled')+'>确认并加入人选</button><button class="btn ghost small" data-ai-action="reject">忽略</button></div>';
+      box.appendChild(card);
+    });
+  }catch(e){
+    console.error('读取AI待确认列表失败',e);box.innerHTML='';
+    var msg=document.createElement('div');msg.className='empty';msg.innerHTML='<b>待确认列表暂不可用</b>'+htmlEscape(e.message||'请确认已执行 AI 建议表的数据库设置。');box.appendChild(msg);
+    document.getElementById('aiQueueEmpty').style.display='none';
+    document.getElementById('aiBadge').style.display='none';
+  }
+}
+async function runAiDiscovery(){
+  var btn=document.getElementById('aiRunBtn'),status=document.getElementById('aiRunStatus');
+  var companyId=document.getElementById('aiCompany').value,co=DB.companies.find(function(c){return c.id===companyId;});
+  var titles=document.getElementById('aiTitles').value.split(/[，,、;；]/).map(function(x){return x.trim();}).filter(Boolean);
+  if(!co){status.textContent='请先选择公司';return;}
+  if(!titles.length){status.textContent='请填写至少一个目标职位';document.getElementById('aiTitles').focus();return;}
+  btn.disabled=true;status.textContent='AI 正在搜索公开信息并整理来源，请稍候…';
+  try{
+    var result=await supabaseClient.functions.invoke('ai-mapping-discover',{body:{target_company:co.name+(co.en?' '+co.en:''),target_company_id:co.id,target_titles:titles,department:document.getElementById('aiDepartment').value.trim(),requirements:document.getElementById('aiRequirements').value.trim(),limit:3}});
+    if(result.error)throw result.error;
+    status.textContent=result.data&&result.data.created?'已生成 '+result.data.created+' 条待确认线索':'本次没有找到带可靠来源的候选线索';
+    await renderAiQueue();
+  }catch(e){
+    console.error('AI寻访失败',e);status.textContent='寻访没有完成：'+(e.message||'请检查后台服务设置');
+  }finally{btn.disabled=false;}
+}
+async function reviewAiSuggestion(id,decision){
+  var query=supabaseClient.schema('mapping').from('ai_suggestions');
+  var found=await query.select('*').eq('id',id).single();
+  if(found.error||!found.data){toast('这条建议已更新或暂时无法读取，请刷新列表');return;}
+  var item=found.data;
+  if(decision==='rejected'){
+    var rejected=await supabaseClient.schema('mapping').from('ai_suggestions').update({status:'rejected',reviewed_at:new Date().toISOString(),updated_at:new Date().toISOString(),review_note:'HR 忽略'}).eq('id',id).eq('status','pending');
+    if(rejected.error){toast('暂时无法忽略，请检查数据库权限');return;}
+    toast('已忽略这条建议');await renderAiQueue();return;
+  }
+  var companyId=item.target_company_id||state.company;
+  var duplicate=DB.people.find(function(p){return !p.vacancy&&p.company===companyId&&String(p.name||'').trim().toLowerCase()===String(item.candidate_name||'').trim().toLowerCase();});
+  if(duplicate){toast('Mapping 中已有同名人选：'+duplicate.name+'。为避免重复，请先在候选人资料中核对。');return;}
+  var proposed=item.proposed_data||{},evidence=Array.isArray(item.evidence)?item.evidence:[],source=evidence.find(function(ev){return /^https:\/\//i.test(String(ev.url||''));});
+  if(!source){toast('缺少可核实的来源链接，不能加入正式人选');return;}
+  var title=proposed.current_title||item.current_title||'职位待核实';
+  var personId='ai'+Date.now()+Math.floor(Math.random()*1000);
+  var summary=proposed.summary||item.summary||'';
+  var exp=[item.current_company||item.target_company,title,summary].filter(Boolean).join('；');
+  var p=P(personId,item.candidate_name,companyId,proposed.department||item.department||'待核实',title,null,{
+    exp:exp,sourceUrl:source.url,sourceDate:source.published_at||'',verifiedAt:'',confidence:'AI线索，HR待核实',unverified:true,
+    tags:[],updates:[U(uid(),today(),'ai','公开线索补充','',title,source.url,'待核实','AI建议 / HR已确认入库')],
+    priv:{phone:'',wechat:'',salary:'',intent:'未知',source:'公开网页AI寻访',targetRole:(document.getElementById('aiTitles').value||''),priority:'',fit:item.fit_reason||'',fitReason:item.fit_reason||'',risk:'职位与任职状态请建联前复核',owner:'',nextStep:'核实公开来源并评估是否建联',note:''}
+  });
+  DB.people.push(p);try{localStorage.setItem(LS_KEY,JSON.stringify(DB));}catch(e){}
+  clearTimeout(remoteSaveTimer);
+  var saved=await syncChangedRecords();
+  if(!saved){DB.people=DB.people.filter(function(x){return x.id!==personId;});try{localStorage.setItem(LS_KEY,JSON.stringify(DB));}catch(e){}renderAll();toast('人选未加入：云端保存失败，请稍后重试');return;}
+  var marked=await supabaseClient.schema('mapping').from('ai_suggestions').update({status:'approved',reviewed_at:new Date().toISOString(),updated_at:new Date().toISOString(),review_note:'HR确认并加入Mapping'}).eq('id',id).eq('status','pending');
+  renderAll();
+  if(marked.error){toast('人选已加入 Mapping，但建议状态更新失败；刷新后核对待确认列表');return;}
+  toast('已确认并加入人选：'+p.name);await renderAiQueue();
+}
+function bindAiQueue(){
+  var box=document.getElementById('aiQueue');if(!box||box.dataset.bound)return;box.dataset.bound='1';
+  box.addEventListener('click',function(e){var btn=e.target.closest('[data-ai-action]');if(!btn)return;var card=btn.closest('.ai-card');if(card)reviewAiSuggestion(card.dataset.id,btn.dataset.aiAction);});
 }
 /* SECTION: drawer */
 function openDrawer(id,tab){
@@ -1588,6 +1722,7 @@ function renderAll(){
   if(state.view==='list')renderList();
   if(state.view==='updates')renderUpdates();
   if(state.view==='todo')renderTodo();
+  if(state.view==='ai'){bindAiQueue();renderAiQueue();}
 }
 function bind(){
   if(mappingUiBound)return;
@@ -1634,6 +1769,8 @@ function bind(){
   document.getElementById('cmCancel').addEventListener('click',function(){document.getElementById('companyModal').classList.remove('on');});
   document.getElementById('cmSave').addEventListener('click',saveCompany);
   document.getElementById('addPersonBtn').addEventListener('click',function(){openPersonModal(null);});
+  document.getElementById('aiRunBtn').addEventListener('click',runAiDiscovery);
+  document.getElementById('aiRefreshBtn').addEventListener('click',renderAiQueue);
   document.getElementById('dwClose').addEventListener('click',closeDrawer);
   document.getElementById('overlay').addEventListener('click',closeDrawer);
   document.querySelectorAll('#dwTabs button').forEach(function(b){

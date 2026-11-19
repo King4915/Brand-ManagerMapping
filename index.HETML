@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>外企消费品营销人才Mapping看板｜HR协作版</title>
+<style>
+/* SECTION: base */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f4f6fb; --card:#ffffff; --ink:#1e2433; --sub:#6b7280; --line:#e5e9f2;
+  --brand:#4f46e5; --brand-soft:#eef2ff; --amber:#d97706; --amber-soft:#fef3c7;
+  --red:#dc2626; --red-soft:#fee2e2; --green:#059669; --green-soft:#d1fae5;
+  --blue:#2563eb; --blue-soft:#dbeafe; --purple:#7c3aed; --purple-soft:#ede9fe;
+  --gray:#9ca3af; --gray-soft:#f3f4f6; --radius:14px;
+  --shadow:0 1px 3px rgba(16,24,40,.07),0 4px 14px rgba(16,24,40,.05);
+}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.55}
+button{font-family:inherit;cursor:pointer;border:none;background:none;font-size:14px}
+input,select,textarea{font-family:inherit;font-size:16px;color:var(--ink)}
+.wrap{max-width:1200px;margin:0 auto;padding:0 16px}
+/* SECTION: header */
+header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.hd-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 0 8px}
+.logo{display:flex;align-items:center;gap:10px;min-width:0}
+.logo-mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex:none}
+.logo h1{font-size:17px;font-weight:700;white-space:nowrap}
+.logo p{font-size:12px;color:var(--sub);white-space:nowrap}
+.demo-tag{font-size:11px;background:var(--green-soft);color:var(--green);border:1px solid #a7f3d0;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.search-box{flex:1;min-width:200px;position:relative}
+.search-box input{width:100%;padding:10px 14px 10px 38px;border:1.5px solid var(--line);border-radius:999px;background:#fff;outline:none;transition:border .15s}
+.search-box input:focus{border-color:var(--brand)}
+.search-box svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:16px;height:16px;stroke:var(--sub)}
+.search-count{font-size:12px;color:var(--sub);white-space:nowrap}
+.hd-reset{font-size:12px;color:var(--sub);border:1px solid var(--line);border-radius:999px;padding:6px 12px;background:#fff;white-space:nowrap}
+.hd-reset:hover{color:var(--red);border-color:var(--red)}
+.stats{display:flex;gap:8px;flex-wrap:wrap;padding:0 0 10px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:6px 12px;font-size:12px;color:var(--sub);display:flex;align-items:center;gap:6px}
+.stat b{font-size:15px;color:var(--ink)}
+.stat.warn b{color:var(--amber)}
+.stat.hot b{color:var(--brand)}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+nav.tabs button{padding:10px 16px;font-size:14px;color:var(--sub);border-bottom:2.5px solid transparent;white-space:nowrap;display:flex;align-items:center;gap:6px;min-height:44px}
+nav.tabs button.on{color:var(--brand);border-bottom-color:var(--brand);font-weight:600}
+.tab-badge{background:var(--amber);color:#fff;font-size:11px;border-radius:999px;padding:1px 7px;font-weight:600}
+/* SECTION: demo banner */
+.demo-banner{margin:14px 0 0;background:var(--blue-soft);border:1px solid #bfdbfe;border-radius:var(--radius);padding:10px 14px;font-size:13px;color:#1e40af;display:flex;gap:8px;align-items:flex-start}
+.demo-banner span{flex:1;min-width:0}
+/* SECTION: views */
+main{padding:16px 0 60px}
+.view{display:none}
+.view.on{display:block}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.panel-hd{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.panel-hd h2{font-size:15px;font-weight:700}
+.panel-hd .hint{font-size:12px;color:var(--sub);flex:1;min-width:160px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.chip{padding:8px 16px;border-radius:999px;border:1.5px solid var(--line);background:#fff;font-size:13px;color:var(--sub);min-height:38px;transition:all .15s}
+.chip.on{border-color:var(--brand);background:var(--brand-soft);color:var(--brand);font-weight:600}
+/* SECTION: org tree */
+.tree-scroll{overflow-x:auto;padding:24px 12px 28px;-webkit-overflow-scrolling:touch}
+.tree{display:inline-block;min-width:100%}
+.tree ul{display:flex;justify-content:center;position:relative;padding-top:22px}
+.tree>ul{padding-top:0}
+.tree li{display:flex;flex-direction:column;align-items:center;position:relative;padding:22px 7px 0}
+.tree li::before,.tree li::after{content:'';position:absolute;top:0;right:50%;border-top:2px solid #cdd5e4;width:50%;height:22px}
+.tree li::after{right:auto;left:50%;border-left:2px solid #cdd5e4}
+.tree li:only-child::before,.tree li:only-child::after{display:none}
+.tree li:only-child{padding-top:0}
+.tree li:first-child::before,.tree li:last-child::after{border-top:0 none}
+.tree li:last-child::before{border-right:2px solid #cdd5e4;border-radius:0 8px 0 0}
+.tree li:first-child::after{border-radius:8px 0 0 0}
+.tree ul ul::before{content:'';position:absolute;top:0;left:50%;border-left:2px solid #cdd5e4;width:0;height:22px}
+.node{width:164px;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:10px 10px 9px;cursor:pointer;position:relative;transition:all .15s;box-shadow:var(--shadow);text-align:left}
+.node:hover{border-color:var(--brand);transform:translateY(-2px)}
+.node.root{border-color:var(--brand);background:linear-gradient(180deg,#f5f6ff,#fff)}
+.node.vacancy{border-style:dashed;background:#fafbfd}
+.node.dim{opacity:.28}
+.node .nm{font-weight:700;font-size:14px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.node .tt{font-size:11.5px;color:var(--sub);margin-top:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.node .st{display:flex;align-items:center;gap:5px;margin-top:7px;font-size:11px;color:var(--sub)}
+.dot{width:8px;height:8px;border-radius:50%;flex:none}
+.node .flags{position:absolute;top:-8px;right:-6px;display:flex;gap:4px}
+.flag{width:20px;height:20px;border-radius:50%;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;font-weight:700;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.flag.fu{background:var(--amber)}
+.flag.cf{background:var(--red)}
+.flag.uv{background:#6b7280}
+.node-acts{display:flex;gap:5px;margin-top:8px}
+.node-acts button{flex:1;font-size:11px;padding:4px 0;border-radius:6px;border:1px solid var(--line);background:#fff;color:var(--sub);min-height:26px}
+.node-acts button:hover{border-color:var(--brand);color:var(--brand)}
+.org-note{font-size:12px;color:var(--sub);padding:0 16px 14px}
+.editmode-on{border-color:var(--amber)!important;background:var(--amber-soft)!important;color:var(--amber)!important;font-weight:600}
+/* SECTION: status pills */
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:3px 10px;border-radius:999px;font-weight:600;white-space:nowrap}
+.pill.s0{background:var(--gray-soft);color:#4b5563}
+.pill.s1{background:var(--blue-soft);color:var(--blue)}
+.pill.s2{background:var(--brand-soft);color:var(--brand)}
+.pill.s3{background:var(--amber-soft);color:var(--amber)}
+.pill.s4{background:var(--purple-soft);color:var(--purple)}
+.pill.s5{background:var(--green-soft);color:var(--green)}
+.pill.s6{background:var(--red-soft);color:var(--red)}
+.uv-tag{font-size:11px;padding:2px 8px;border-radius:6px;background:var(--gray-soft);color:#4b5563;border:1px dashed #9ca3af;white-space:nowrap}
+/* SECTION: list view */
+.filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.filters select{padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fff;outline:none;min-height:42px}
+.filters label{font-size:13px;color:var(--sub);display:flex;align-items:center;gap:6px;min-height:42px}
+.filters input[type=checkbox]{width:17px;height:17px;accent-color:var(--brand)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.pcard{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;cursor:pointer;box-shadow:var(--shadow);transition:all .15s;min-width:0}
+.pcard:hover{border-color:var(--brand);transform:translateY(-2px)}
+.pcard .r1{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pcard .nm{font-weight:700;font-size:15px}
+.co-tag{font-size:11px;padding:2px 8px;border-radius:6px;background:var(--gray-soft);color:var(--sub);white-space:nowrap}
+.pcard .tt{font-size:13px;color:var(--sub);margin-top:4px}
+.pcard .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.tag{font-size:11px;background:var(--brand-soft);color:var(--brand);padding:2px 8px;border-radius:6px}
+.pcard .r2{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+.mini{font-size:11px;color:var(--sub)}
+.mini.fu{color:var(--amber);font-weight:600}
+.mini.fu.over{color:var(--red)}
+.empty{padding:48px 20px;text-align:center;color:var(--sub);font-size:14px}
+.empty b{display:block;font-size:16px;color:var(--ink);margin-bottom:6px}
+/* SECTION: updates view */
+.upd-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.upd-meta .info{font-size:13px;color:var(--sub);flex:1;min-width:200px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 18px;border-radius:10px;font-weight:600;font-size:14px;min-height:44px;transition:all .15s}
+.btn.primary{background:var(--brand);color:#fff}
+.btn.primary:hover{background:#4338ca}
+.btn.ghost{border:1.5px solid var(--line);background:#fff;color:var(--ink)}
+.btn.ghost:hover{border-color:var(--brand);color:var(--brand)}
+.btn.small{padding:6px 12px;font-size:12.5px;min-height:34px;border-radius:8px}
+.btn.danger{background:var(--red-soft);color:var(--red)}
+.btn.green{background:var(--green-soft);color:var(--green)}
+.timeline{display:flex;flex-direction:column}
+.upd{display:flex;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.upd:last-child{border-bottom:none}
+.upd .rail{display:flex;flex-direction:column;align-items:center;flex:none;width:14px;padding-top:5px}
+.upd .rail .dot{width:10px;height:10px}
+.upd .rail .ln{flex:1;width:2px;background:var(--line);margin-top:4px}
+.upd .bd{flex:1;min-width:0}
+.upd .r1{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.upd .who{font-weight:700;font-size:14px;color:var(--brand);cursor:pointer;background:none;padding:0}
+.upd .who:hover{text-decoration:underline}
+.upd .dt{font-size:12px;color:var(--sub)}
+.type-badge{font-size:11px;padding:2px 8px;border-radius:6px;font-weight:600}
+.type-badge.ai{background:var(--blue-soft);color:var(--blue)}
+.type-badge.manual{background:var(--green-soft);color:var(--green)}
+.type-badge.conflict{background:var(--red-soft);color:var(--red)}
+.upd .diff{margin-top:6px;font-size:13.5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.upd .diff .fld{color:var(--sub);font-size:12.5px}
+.upd .diff .old{color:var(--sub);text-decoration:line-through}
+.upd .diff .arr{color:var(--sub)}
+.upd .diff .new{font-weight:600}
+.upd .src{margin-top:5px;font-size:12px;color:var(--sub)}
+.upd .resolve{display:flex;gap:8px;margin-top:9px;flex-wrap:wrap}
+.upd .resolved-note{margin-top:7px;font-size:12px;color:var(--green);font-weight:600}
+/* SECTION: todo view */
+.todo{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.todo:last-child{border-bottom:none}
+.todo .info{flex:1;min-width:180px}
+.todo .nm{font-weight:700;font-size:14.5px}
+.todo .tt{font-size:12.5px;color:var(--sub)}
+.todo .due{font-size:12.5px;font-weight:600;padding:4px 10px;border-radius:8px;background:var(--amber-soft);color:var(--amber);white-space:nowrap}
+.todo .due.over{background:var(--red-soft);color:var(--red)}
+.todo .acts{display:flex;gap:8px;flex-wrap:wrap}
+/* SECTION: drawer */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:90;opacity:0;pointer-events:none;transition:opacity .2s}
+.overlay.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(520px,100%);background:#fff;z-index:100;transform:translateX(105%);transition:transform .25s ease;display:flex;flex-direction:column;box-shadow:-8px 0 30px rgba(15,23,42,.15)}
+.drawer.on{transform:translateX(0)}
+.dw-hd{padding:16px 18px 12px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#f8f9ff,#fff)}
+.dw-hd .r1{display:flex;align-items:flex-start;gap:10px}
+.dw-hd .nm{font-size:19px;font-weight:800;flex:1;min-width:0}
+.dw-close{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:#fff;font-size:16px;color:var(--sub);flex:none}
+.dw-hd .tt{font-size:13px;color:var(--sub);margin-top:2px}
+.dw-hd .r2{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+.dw-hd select{padding:6px 10px;border:1.5px solid var(--line);border-radius:8px;font-size:13px;background:#fff;min-height:36px}
+.dw-banner{margin:10px 18px 0;border-radius:10px;padding:9px 12px;font-size:12.5px;display:none}
+.dw-banner.warn{display:block;background:var(--amber-soft);color:#92400e;border:1px solid #fde68a}
+.dw-banner.conflict{display:block;background:var(--red-soft);color:#991b1b;border:1px solid #fecaca}
+.dw-banner.verify{display:block;background:var(--gray-soft);color:#374151;border:1px dashed #9ca3af}
+.dw-tabs{display:flex;border-bottom:1px solid var(--line);padding:0 18px;overflow-x:auto}
+.dw-tabs button{padding:11px 13px;font-size:13.5px;color:var(--sub);border-bottom:2.5px solid transparent;white-space:nowrap;min-height:44px}
+.dw-tabs button.on{color:var(--brand);border-bottom-color:var(--brand);font-weight:600}
+.dw-body{flex:1;overflow-y:auto;padding:16px 18px 30px;-webkit-overflow-scrolling:touch}
+.dw-sec{display:none}
+.dw-sec.on{display:block}
+.kv{display:flex;gap:10px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:13.5px}
+.kv:last-child{border-bottom:none}
+.kv .k{width:82px;flex:none;color:var(--sub);font-size:12.5px;padding-top:1px}
+.kv .v{flex:1;min-width:0;word-break:break-all}
+.kv .lock{font-size:11px;color:var(--green);margin-left:6px;white-space:nowrap}
+.blk-title{font-size:13px;font-weight:700;color:var(--sub);margin:16px 0 6px;display:flex;align-items:center;gap:8px}
+.blk-title:first-child{margin-top:0}
+.blk-title .edit-link{margin-left:auto;font-size:12.5px;color:var(--brand);font-weight:600;padding:4px 10px;border:1px solid var(--brand);border-radius:8px;background:#fff}
+.privacy-note{font-size:11.5px;color:var(--sub);background:var(--gray-soft);border-radius:8px;padding:7px 10px;margin-top:10px}
+.dw-danger{margin-top:18px;text-align:right}
+/* CV */
+.cv-file-box{border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:14px;background:#fff}
+.cv-file-box .fn{font-size:13px;font-weight:600;margin-bottom:8px;word-break:break-all}
+.cv-file-box iframe{width:100%;height:440px;border:1px solid var(--line);border-radius:8px;background:#fff}
+.cv-file-box .acts{display:flex;gap:8px;margin-top:8px;justify-content:flex-end}
+.cv-upload{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.cv-upload .hint{font-size:12px;color:var(--sub)}
+.cv-doc{border:1px solid var(--line);border-radius:12px;padding:20px 18px;background:#fffdf8}
+.cv-doc .cv-nm{font-size:20px;font-weight:800}
+.cv-doc .cv-tt{font-size:13px;color:var(--sub);margin-top:2px}
+.cv-doc h4{font-size:13px;color:var(--brand);margin:16px 0 6px;padding-bottom:4px;border-bottom:1.5px solid var(--brand-soft)}
+.cv-doc p{font-size:13px}
+.cv-exp{padding:7px 0;border-bottom:1px dashed var(--line)}
+.cv-exp:last-child{border-bottom:none}
+.cv-exp .pd{font-size:11.5px;color:var(--sub)}
+.cv-exp .rl{font-size:13.5px;font-weight:700;margin-top:1px}
+.cv-exp .ds{font-size:12.5px;color:var(--sub);margin-top:2px}
+.cv-watermark{font-size:11px;color:var(--amber);text-align:center;margin-top:14px}
+/* contacts */
+.ct{padding:11px 0;border-bottom:1px dashed var(--line)}
+.ct:last-child{border-bottom:none}
+.ct .r1{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12.5px;color:var(--sub)}
+.ct .r1 b{color:var(--ink);font-size:13px}
+.ct .note{font-size:13px;margin-top:4px}
+.ct-acts{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+/* SECTION: modal */
+.modal-wrap{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(15,23,42,.5)}
+.modal-wrap.on{display:flex}
+.modal{background:#fff;border-radius:16px;width:min(480px,100%);max-height:88vh;overflow-y:auto;padding:20px}
+.modal h3{font-size:16px;font-weight:700;margin-bottom:14px}
+.modal h4{font-size:13px;color:var(--sub);margin:14px 0 8px;padding-top:10px;border-top:1px solid var(--line)}
+.f-row{margin-bottom:12px}
+.f-row label{display:block;font-size:12.5px;color:var(--sub);margin-bottom:5px}
+.f-row input,.f-row select,.f-row textarea{width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;outline:none;background:#fff}
+.f-row input:focus,.f-row select:focus,.f-row textarea:focus{border-color:var(--brand)}
+.f-row textarea{resize:vertical;min-height:64px}
+.f-2col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.f-check{display:flex;align-items:center;gap:8px;font-size:13.5px;padding:6px 0}
+.f-check input{width:18px;height:18px;accent-color:var(--brand)}
+.modal .acts{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
+.modal .acts .left{margin-right:auto}
+/* SECTION: toast */
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:#111827;color:#fff;padding:11px 20px;border-radius:12px;font-size:13.5px;z-index:200;opacity:0;pointer-events:none;transition:all .25s;max-width:90vw;text-align:center}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+/* SECTION: responsive */
+@media (max-width:640px){
+  .logo p{display:none}
+  .hd-top{gap:8px}
+  .search-box{order:3;flex-basis:100%}
+  .grid{grid-template-columns:1fr}
+  .drawer{width:100%}
+  .node{width:146px}
+  .stat{padding:5px 9px}
+  .f-2col{grid-template-columns:1fr}
+}
+/* SECTION: visual refinement */
+:root{
+  --bg:#f5f7f6;--card:#fff;--ink:#182b2a;--sub:#687876;--line:#e3ebe8;
+  --brand:#167568;--brand-soft:#e8f4f1;--amber:#a86618;--amber-soft:#fff4df;
+  --red:#b74444;--red-soft:#fceeee;--green:#24785c;--green-soft:#e8f5ee;
+  --blue:#316f8c;--blue-soft:#eaf3f7;--purple:#7659a3;--purple-soft:#f1edf8;
+  --gray:#879592;--gray-soft:#f1f4f3;--radius:16px;
+  --shadow:0 2px 8px rgba(27,54,49,.045),0 12px 28px rgba(27,54,49,.035);
+}
+body{font-size:14px;line-height:1.6;letter-spacing:.005em}
+.wrap{max-width:1400px;padding-left:28px;padding-right:28px}
+header{background:rgba(255,255,255,.96);box-shadow:0 3px 18px rgba(25,48,44,.035)}
+.hd-top{gap:18px;padding:18px 0 12px}
+.logo{gap:12px}
+.logo-mark{width:42px;height:42px;border-radius:13px;background:linear-gradient(145deg,#167568,#2a8b79);box-shadow:0 5px 12px rgba(22,117,104,.18)}
+.logo h1{font-size:18px;letter-spacing:.01em}
+.logo p{font-size:12px;margin-top:1px}
+.demo-tag{background:#edf6f2;color:#39745e;border-color:#d8eae1;padding:5px 10px}
+.search-box input{padding:11px 16px 11px 40px;border-radius:12px;background:#f8faf9;border-color:#e6ecea;font-size:14px}
+.search-box input:focus{background:#fff;border-color:var(--brand);box-shadow:0 0 0 3px rgba(22,117,104,.09)}
+.hd-reset{border-radius:9px;padding:8px 12px}
+.stats{gap:10px;padding:3px 0 14px}
+.stat{min-width:124px;border:0;border-radius:12px;padding:9px 13px;box-shadow:0 1px 4px rgba(27,54,49,.045);background:#f8faf9}
+.stat b{font-size:18px;letter-spacing:-.02em}
+nav.tabs{gap:8px}
+nav.tabs button{padding:10px 14px;color:#778582}
+nav.tabs button.on{color:var(--brand);border-bottom-color:var(--brand)}
+.demo-banner{margin-top:20px;padding:12px 16px;background:#f0f6f4;border-color:#e0ebe7;color:#4c6862;border-radius:12px;font-size:12.5px}
+main{padding-top:22px}
+.chips{gap:8px;margin-bottom:16px}
+.chip{border-radius:10px;padding:8px 14px;background:#fff;border-color:#e5ece9;color:#62716e}
+.chip.on{background:var(--brand-soft);border-color:#cfe5df;color:var(--brand)}
+.panel{border-color:#e7eeeb;border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+.panel-hd{padding:17px 20px;gap:12px}
+.panel-hd h2{font-size:16px;letter-spacing:.01em}
+.panel-hd .hint{font-size:12px;color:#82908d}
+.tree-scroll{padding:34px 22px 38px}
+.tree li{padding-left:10px;padding-right:10px}
+.tree li::before,.tree li::after,.tree ul ul::before{border-color:#d6e2de}
+.node{width:176px;border:1px solid #e3ebe8;border-radius:13px;padding:12px 13px 11px;box-shadow:0 3px 10px rgba(27,54,49,.05)}
+.node:hover{box-shadow:0 8px 20px rgba(22,117,104,.12)}
+.node.root{background:linear-gradient(150deg,#eef7f4,#fff 76%);border-color:#9bcbbd}
+.node .nm{font-size:13.5px}
+.node .tt{font-size:11.5px;line-height:1.5}
+.org-note{padding:0 20px 18px;color:#82908d}
+.filters{gap:9px;margin-bottom:16px}
+.filters select{border-radius:10px;border-color:#e1e9e6;background:#fff;font-size:13px}
+.grid{gap:16px}
+.pcard{padding:18px;border-radius:15px;border-color:#e6eeeb;box-shadow:0 3px 12px rgba(27,54,49,.045)}
+.pcard:hover{box-shadow:0 10px 24px rgba(22,117,104,.10)}
+.pcard .nm{font-size:15px}
+.pcard .tt{line-height:1.55}
+.tag{background:#eef6f3;color:#39776a;border-radius:7px;padding:3px 8px}
+.btn{border-radius:10px}
+.btn.primary{background:var(--brand);box-shadow:0 3px 8px rgba(22,117,104,.14)}
+.btn.primary:hover{background:#105e54}
+.upd{padding:17px 20px}
+.todo{padding:16px 20px}
+.drawer{box-shadow:-12px 0 40px rgba(25,48,44,.14)}
+.dw-hd{padding:22px 22px 16px;background:linear-gradient(150deg,#f2f8f6,#fff 80%)}
+.dw-hd .nm{font-size:21px}
+.dw-body{padding:20px 22px 32px}
+.dw-tabs{padding:0 22px}
+.dw-tabs button{padding:12px 14px}
+.blk-title{color:#526a65;margin-top:20px}
+.kv{padding:10px 0;line-height:1.65}
+.modal{border-radius:18px;padding:24px;box-shadow:0 20px 60px rgba(15,35,32,.20)}
+.modal h3{font-size:18px}
+.f-row input,.f-row select,.f-row textarea{border-color:#e1e9e6;border-radius:10px;font-size:14px}
+.f-row input:focus,.f-row select:focus,.f-row textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(22,117,104,.08)}
+.empty{padding:56px 20px}
+@media(max-width:640px){
+  .wrap{padding-left:16px;padding-right:16px}
+  .hd-top{padding-top:13px}
+  .stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stat{min-width:0}
+  .tree-scroll{padding:24px 12px 28px}
+  .panel-hd{padding:14px 15px}
+  .pcard{padding:16px}
+}
+
+/* SECTION: header layout refinement */
+.hd-top{display:grid;grid-template-columns:minmax(260px,1fr) minmax(320px,560px) auto;grid-template-areas:"logo search reset" "tag search reset";align-items:center;column-gap:24px;row-gap:5px;padding:16px 0 12px}
+.logo{grid-area:logo}
+.demo-tag{grid-area:tag;justify-self:start;margin-left:54px}
+.search-box{grid-area:search;width:100%;min-width:0;max-width:560px;justify-self:end}
+.search-box input{height:48px;padding-left:44px;font-size:14px}
+.search-box svg{left:16px;width:17px;height:17px}
+.search-count{display:none}
+.hd-reset{grid-area:reset;align-self:center}
+.stats{gap:0;padding:3px 0 12px}
+.stat{min-width:0;background:transparent;box-shadow:none;border:0;border-right:1px solid #e6ece9;border-radius:0;padding:4px 20px 4px 0;margin-right:20px}
+.stat:last-child{border-right:0;margin-right:0}
+.stat b{font-size:16px}
+.demo-banner{margin-top:16px;padding:10px 14px;font-size:12px;line-height:1.5}
+.chips{margin-top:16px}
+@media(max-width:900px){
+  .hd-top{grid-template-columns:minmax(220px,1fr) auto;grid-template-areas:"logo reset" "search search" "tag tag";column-gap:12px}
+  .search-box{max-width:none}
+  .demo-tag{margin-left:0}
+}
+</style>
+</head>
+<body>
+<!-- SECTION: header -->
+<header>
+  <div class="wrap">
+    <div class="hd-top">
+      <div class="logo">
+        <div class="logo-mark">M</div>
+        <div>
+          <h1>营销人才 Mapping</h1>
+          <p>外企龙头消费品行业 · 组织与人选情报</p>
+        </div>
+      </div>
+      <span class="demo-tag">HR 协作版 · 公开线索 + 人工维护</span>
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input id="searchInput" type="search" placeholder="搜索人名 / 公司 / 职位 / 技能 / 学校 / 备注…">
+      </div>
+      <span class="search-count" id="searchCount"></span>
+      <button class="hd-reset" id="resetBtn">重置全部数据</button>
+    </div>
+    <div class="stats" id="statsBar"></div>
+    <nav class="tabs" id="navTabs">
+      <button data-view="org" class="on">组织架构</button>
+      <button data-view="list">人选列表</button>
+      <button data-view="updates">动态记录</button>
+      <button data-view="todo">跟进待办 <span class="tab-badge" id="todoBadge" style="display:none"></span></button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="demo-banner">
+    <span>公开线索按周核查并保留来源与变更记录。联系方式、薪酬和意向由 HR 维护。公开组织关系仅供参考，请在建联前核实。</span>
+  </div>
+
+  <!-- SECTION: org view -->
+  <section class="view on" id="view-org">
+    <div class="chips" id="companyChips"></div>
+    <div class="panel">
+      <div class="panel-hd">
+        <h2 id="orgTitle">组织架构</h2>
+        <span class="hint">点人名看卡片 · 虚线框为待补全岗位 · 角标：橙=待跟进 红=冲突 灰=待核实</span>
+        <button class="btn ghost small" id="editModeBtn">编辑架构</button>
+        <button class="btn ghost small" id="addTopBtn">＋ 顶层节点</button>
+        <button class="btn ghost small" id="addCoBtn">＋ 公司</button>
+      </div>
+      <div class="tree-scroll"><div class="tree" id="orgTree"></div></div>
+      <p class="org-note">汇报线为基于公开报道的示意推断，非官方架构；「待补全」为公开信息不足的岗位，可通过招聘渠道或人脉补充后在「编辑架构」中完善。</p>
+    </div>
+  </section>
+
+  <!-- SECTION: list view -->
+  <section class="view" id="view-list">
+    <div class="filters">
+      <select id="fCompany"><option value="">全部公司</option></select>
+      <select id="fStatus"><option value="">全部建联状态</option></select>
+      <label><input type="checkbox" id="fRecent"> 近30天有动态</label>
+      <button class="btn primary small" id="addPersonBtn" style="margin-left:auto">＋ 新增人选</button>
+    </div>
+    <div class="grid" id="peopleGrid"></div>
+    <div class="empty" id="listEmpty" style="display:none"><b>没有匹配的人选</b>试试调整搜索词或筛选条件，或点击「新增人选」</div>
+  </section>
+
+  <!-- SECTION: updates view -->
+  <section class="view" id="view-updates">
+    <div class="upd-meta">
+      <span class="info" id="updMeta"></span>
+      <button class="btn primary" id="simBtn">模拟周度核查</button>
+    </div>
+    <div class="chips" id="updFilter">
+      <button class="chip on" data-f="">全部</button>
+      <button class="chip" data-f="ai">公开动态</button>
+      <button class="chip" data-f="manual">人工编辑</button>
+      <button class="chip" data-f="conflict">待核实冲突</button>
+    </div>
+    <div class="panel"><div class="timeline" id="updList"></div>
+      <div class="empty" id="updEmpty" style="display:none"><b>暂无该类记录</b>只有发生变化的字段才会生成记录</div>
+    </div>
+  </section>
+
+  <!-- SECTION: todo view -->
+  <section class="view" id="view-todo">
+    <div class="panel">
+      <div class="panel-hd"><h2>跟进待办</h2><span class="hint">建联时选择“3个月后跟进”的人选会出现在这里，到期自动标红提醒</span></div>
+      <div id="todoList"></div>
+      <div class="empty" id="todoEmpty" style="display:none"><b>暂无待跟进人选</b>在人选卡片的“建联记录”里点击“3个月后跟进”即可创建</div>
+    </div>
+  </section>
+</main>
+
+<!-- SECTION: drawer -->
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="drawer">
+  <div class="dw-hd">
+    <div class="r1">
+      <div style="flex:1;min-width:0">
+        <div class="nm" id="dwName"></div>
+        <div class="tt" id="dwTitle"></div>
+      </div>
+      <button class="dw-close" id="dwClose">✕</button>
+    </div>
+    <div class="r2">
+      <span id="dwStatusPill"></span>
+      <select id="dwStatusSel" title="修改建联状态"></select>
+      <span class="mini fu" id="dwFollow" style="display:none"></span>
+    </div>
+  </div>
+  <div class="dw-banner" id="dwDupBanner"></div>
+  <div class="dw-banner" id="dwConflictBanner"></div>
+  <div class="dw-banner" id="dwVerifyBanner"></div>
+  <div class="dw-tabs" id="dwTabs">
+    <button data-tab="info" class="on">基本信息</button>
+    <button data-tab="cv">CV / 公开履历</button>
+    <button data-tab="updates">更新记录</button>
+    <button data-tab="contacts">建联记录</button>
+  </div>
+  <div class="dw-body">
+    <div class="dw-sec on" id="sec-info">
+      <div class="blk-title">公开信息（AI 采集 + 人工核实）<button class="edit-link" id="editBtn">编辑资料</button></div>
+      <div id="pubFields"></div>
+      <div class="blk-title">私有信息（HR 人工维护）</div>
+      <div id="privFields"></div>
+      <div class="privacy-note">私有信息仅录入者与授权同事可见（演示版不做真实权限隔离）。人工编辑过的公开字段会被锁定，后续 AI 抓到不一致时只提醒、不覆盖。</div>
+      <div class="dw-danger"><button class="btn danger small" id="deletePersonBtn">删除该人选</button></div>
+    </div>
+    <div class="dw-sec" id="sec-cv">
+      <div class="cv-upload">
+        <button class="btn primary small" id="cvUploadBtn">上传 PDF 简历</button>
+        <span class="hint">≤2.5MB，保存在本浏览器；点击即可在线预览</span>
+        <input type="file" id="cvFileInput" accept="application/pdf" style="display:none">
+      </div>
+      <div id="cvFileBox"></div>
+      <div id="cvBox"></div>
+      <div class="empty" id="cvEmpty" style="display:none"><b>暂无 CV 与公开履历</b>可上传 PDF 简历，或在「编辑资料」中补充履历摘要</div>
+    </div>
+    <div class="dw-sec" id="sec-updates">
+      <div class="timeline" id="dwUpdList"></div>
+      <div class="empty" id="dwUpdEmpty" style="display:none"><b>暂无更新记录</b>信息未发生变化时不生成记录</div>
+    </div>
+    <div class="dw-sec" id="sec-contacts">
+      <div class="ct-acts">
+        <button class="btn primary small" id="addContactBtn">＋ 添加建联记录</button>
+        <button class="btn ghost small" data-follow-days="7">7天后</button>
+        <button class="btn ghost small" data-follow-days="30">30天后</button>
+        <button class="btn ghost small" data-follow-days="90" id="follow3mBtn">90天后</button>
+        <input type="date" id="customFollowDate" aria-label="自定义再次建联日期" style="width:auto;padding:6px 8px;border:1px solid var(--line);border-radius:8px">
+        <button class="btn danger small" id="dndBtn">标记勿扰</button>
+      </div>
+      <div id="ctList"></div>
+      <div class="empty" id="ctEmpty" style="display:none"><b>还没有建联记录</b>点击上方按钮记录第一次沟通</div>
+    </div>
+  </div>
+</aside>
+
+<!-- SECTION: person modal -->
+<div class="modal-wrap" id="personModal">
+  <div class="modal">
+    <h3 id="pmHeading">编辑人选资料</h3>
+    <h4 style="border-top:none;margin-top:0;padding-top:0">公开信息（编辑后视为人工核实并锁定）</h4>
+    <div class="f-2col">
+      <div class="f-row"><label>姓名 *</label><input id="pmName"></div>
+      <div class="f-row"><label>公司</label><select id="pmCompany"></select></div>
+    </div>
+    <div class="f-row"><label>职位</label><input id="pmTitle"></div>
+    <div class="f-2col">
+      <div class="f-row"><label>部门</label><input id="pmDept"></div>
+      <div class="f-row"><label>汇报对象</label><select id="pmReports"></select></div>
+    </div>
+    <div class="f-row"><label>技能标签（用逗号分隔）</label><input id="pmTags"></div>
+    <div class="f-row"><label>教育背景</label><input id="pmSchool"></div>
+    <div class="f-row"><label>履历摘要 / 信息来源备注</label><textarea id="pmExp"></textarea></div>
+    <h4>私有信息（仅 HR 可见）</h4>
+    <div class="f-2col">
+      <div class="f-row"><label>手机号</label><input id="pmPhone" type="tel"></div>
+      <div class="f-row"><label>微信</label><input id="pmWechat"></div>
+    </div>
+    <div class="f-2col">
+      <div class="f-row"><label>期望薪酬</label><input id="pmSalary"></div>
+      <div class="f-row"><label>意向等级</label><select id="pmIntent"><option>未知</option><option>积极看机会</option><option>观望</option><option>暂不考虑</option></select></div>
+    </div>
+    <div class="f-row"><label>信息来源</label>
+      <select id="pmSource"><option value="">未标注</option><option>面试记录</option><option>朋友推荐</option><option>电话建联</option><option>内部消息</option><option>招聘网站</option><option>公开报道</option></select>
+    </div>
+    <div class="f-row"><label>备注</label><textarea id="pmNote"></textarea></div>
+    <div class="acts">
+      <button class="btn ghost" id="pmCancel">取消</button>
+      <button class="btn primary" id="pmSave">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION: node modal -->
+<div class="modal-wrap" id="nodeModal">
+  <div class="modal">
+    <h3 id="nmHeading">编辑架构节点</h3>
+    <div class="f-2col">
+      <div class="f-row"><label>节点名称 *</label><input id="nmName" placeholder="人名或岗位名"></div>
+      <div class="f-row"><label>节点类型</label><select id="nmType"><option value="person">人选</option><option value="tbd">待补全岗位</option></select></div>
+    </div>
+    <div class="f-row"><label>职位 / 岗位说明</label><input id="nmTitle"></div>
+    <div class="f-2col">
+      <div class="f-row"><label>部门</label><input id="nmDept"></div>
+      <div class="f-row"><label>汇报对象（调整汇报线）</label><select id="nmReports"></select></div>
+    </div>
+    <div class="f-row"><label>岗位备注（待补全岗位适用）</label><textarea id="nmNote" placeholder="如：空缺原因、在招渠道、内部竞聘传闻等"></textarea></div>
+    <div class="acts">
+      <button class="btn danger left" id="nmDelete" style="display:none">删除节点</button>
+      <button class="btn ghost" id="nmCancel">取消</button>
+      <button class="btn primary" id="nmSave">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION: company modal -->
+<div class="modal-wrap" id="companyModal">
+  <div class="modal">
+    <h3>新增公司</h3>
+    <div class="f-row"><label>公司名称 *</label><input id="cmName" placeholder="如：雅诗兰黛"></div>
+    <div class="f-row"><label>英文名 / 简称</label><input id="cmEn" placeholder="如：Estée Lauder"></div>
+    <div class="acts">
+      <button class="btn ghost" id="cmCancel">取消</button>
+      <button class="btn primary" id="cmSave">创建</button>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION: contact modal -->
+<div class="modal-wrap" id="contactModal">
+  <div class="modal">
+    <h3>添加建联记录</h3>
+    <div class="f-row"><label>日期</label><input id="cDate" type="date"></div>
+    <div class="f-row"><label>渠道</label>
+      <select id="cChannel"><option>电话</option><option>微信</option><option>脉脉</option><option>领英</option><option>面试</option><option>朋友引荐</option><option>线下活动</option></select>
+    </div>
+    <div class="f-row"><label>沟通结果</label>
+      <select id="cResult"><option>未接通</option><option>已建联</option><option>沟通中</option><option>有意向</option><option>暂无意向</option><option>推荐面试</option><option>已入职</option><option>勿扰</option></select>
+    </div>
+    <div class="f-row"><label>沟通纪要</label><textarea id="cNote" placeholder="聊了什么、对方关注点、下一步动作…"></textarea></div>
+    <label class="f-check"><input type="checkbox" id="cFollow"> 3个月后再次跟进（加入跟进待办）</label>
+    <div class="acts">
+      <button class="btn ghost" id="contactCancel">取消</button>
+      <button class="btn primary" id="contactSave">保存记录</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- SECTION: templates -->
+<template id="t-stat"><div class="stat"><span data-f="label"></span><b data-f="value"></b></div></template>
+<template id="t-node">
+  <div class="node">
+    <div class="flags"></div>
+    <div class="nm"><span data-f="name"></span></div>
+    <div class="tt" data-f="title"></div>
+    <div class="st"><span class="dot"></span><span data-f="status"></span></div>
+  </div>
+</template>
+<template id="t-flag"><span class="flag"></span></template>
+<template id="t-pcard">
+  <div class="pcard">
+    <div class="r1"><span class="nm" data-f="name"></span><span class="co-tag" data-f="company"></span><span data-f="pill"></span></div>
+    <div class="tt" data-f="title"></div>
+    <div class="tags"></div>
+    <div class="r2"><span class="mini" data-f="upd"></span><span class="mini fu" data-f="follow"></span></div>
+  </div>
+</template>
+<template id="t-tag"><span class="tag"></span></template>
+<template id="t-uvtag"><span class="uv-tag">待核实</span></template>
+<template id="t-upd">
+  <div class="upd">
+    <div class="rail"><span class="dot"></span><span class="ln"></span></div>
+    <div class="bd">
+      <div class="r1"><button class="who" data-f="who"></button><span class="type-badge" data-f="type"></span><span class="dt" data-f="date"></span></div>
+      <div class="diff"><span class="fld" data-f="field"></span><span class="old" data-f="before"></span><span class="arr">→</span><span class="new" data-f="after"></span></div>
+      <div class="src" data-f="src"></div>
+      <div class="resolve" style="display:none">
+        <button class="btn small green" data-act="keep">保留人工记录</button>
+        <button class="btn small ghost" data-act="adopt">采纳公开信息</button>
+      </div>
+      <div class="resolved-note" style="display:none" data-f="resolved"></div>
+    </div>
+  </div>
+</template>
+<template id="t-todo">
+  <div class="todo">
+    <div class="info"><div class="nm" data-f="name"></div><div class="tt" data-f="title"></div></div>
+    <span class="due" data-f="due"></span>
+    <div class="acts">
+      <button class="btn small primary" data-act="open">去建联</button>
+      <button class="btn small ghost" data-act="delay">延后1个月</button>
+      <button class="btn small green" data-act="done">完成跟进</button>
+    </div>
+  </div>
+</template>
+<template id="t-kv"><div class="kv"><span class="k" data-f="k"></span><span class="v"><span data-f="v"></span><span class="lock" data-f="lock" style="display:none">已人工核实锁定</span></span></div></template>
+<template id="t-ct">
+  <div class="ct">
+    <div class="r1"><b data-f="by"></b><span data-f="date"></span><span data-f="channel"></span><span class="pill" data-f="result"></span></div>
+    <div class="note" data-f="note"></div>
+  </div>
+</template>
+<template id="t-cv">
+  <div class="cv-doc">
+    <div class="cv-nm" data-f="name"></div>
+    <div class="cv-tt" data-f="title"></div>
+    <h4>个人概述</h4><p data-f="summary"></p>
+    <h4>工作经历</h4><div class="cv-exps"></div>
+    <h4>教育背景</h4><p data-f="edu"></p>
+    <h4>核心技能</h4><div class="tags cv-skills"></div>
+    <div class="cv-watermark">公开履历 · 据公开报道整理，非本人 CV 附件 · 建联前请核实</div>
+  </div>
+</template>
+<template id="t-cv-exp"><div class="cv-exp"><div class="pd" data-f="period"></div><div class="rl" data-f="role"></div><div class="ds" data-f="desc"></div></div></template>
+<template id="t-cvfile">
+  <div class="cv-file-box">
+    <div class="fn" data-f="name"></div>
+    <iframe title="PDF简历预览"></iframe>
+    <div class="acts"><button class="btn danger small" data-act="delcv">删除该附件</button></div>
+  </div>
+</template>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<div id="authGate" style="position:fixed;inset:0;z-index:300;background:#f5f7f6;display:flex;align-items:center;justify-content:center;padding:20px">
+  <form id="authForm" style="width:min(420px,100%);background:#fff;border:1px solid #e3ebe8;border-radius:18px;padding:28px;box-shadow:0 12px 36px rgba(27,54,49,.10)">
+    <h2 style="font-size:22px;color:#182b2a;margin-bottom:8px">登录人才 Mapping</h2>
+    <p style="color:#687876;font-size:14px;margin-bottom:20px">请输入已获授权的邮箱，我们会发送登录链接。</p>
+    <input id="authEmail" type="email" required placeholder="工作邮箱" style="width:100%;height:48px;padding:0 14px;border:1px solid #dce6e2;border-radius:10px;font:inherit;margin-bottom:12px">
+    <button id="authSubmit" type="submit" style="width:100%;height:46px;border:0;border-radius:10px;background:#167568;color:white;font:inherit;font-weight:600;font-size:15px;cursor:pointer">发送登录链接</button>
+    <p id="authMessage" role="status" style="font-size:13px;color:#687876;margin-top:14px;min-height:20px"></p>
+  </form>
+</div>
+<script>
+/* SECTION: Supabase configuration */
+var SUPABASE_URL='https://dqqmfurqnvearnigikez.supabase.co';
+var SUPABASE_PUBLISHABLE_KEY='sb_publishable_E4UqnalDjXJLBhDynDKmgg_72PhM1UR';
+var supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+var remoteCache={};
+var currentMappingRole=null;
+var remoteSaveTimer=null;
+var remoteSaving=false;
+var pendingRemoteReload=false;
+/* SECTION: data */
+'use strict';
+var STATUS=['未建联','已建联','沟通中','暂无意向','推荐/面试中','已入职','勿扰'];
+var FIELD_LABEL={title:'职位',dept:'部门',company:'公司',name:'姓名',tags:'技能标签',school:'教育背景',exp:'履历摘要',reportsTo:'汇报线',phone:'手机号',wechat:'微信',salary:'期望薪酬',intent:'意向等级',note:'备注',source:'信息来源',status:'建联状态',org:'组织架构',vacNote:'岗位备注'};
+function P(id,name,company,dept,title,reportsTo,extra){
+  var base={id:id,name:name,company:company,dept:dept,title:title,reportsTo:reportsTo,tags:[],school:'',exp:'',status:'未建联',
+    priv:{phone:'',wechat:'',salary:'',intent:'未知',note:'',source:''},locked:[],cv:null,cvFile:null,unverified:false,updates:[],contacts:[],followUp:null};
+  if(extra){for(var k in extra){base[k]=extra[k];}}
+  return base;
+}
+function T(id,name,company,dept,title,reportsTo,note){
+  return {id:id,vacancy:true,name:name,company:company,dept:dept,title:title,reportsTo:reportsTo,note:note||''};
+}
+function U(id,date,type,field,before,after,source,confidence,by,resolved){
+  return {id:id,date:date,type:type,field:field,before:before,after:after,source:source||'',confidence:confidence||'',by:by||'AI',resolved:resolved||null};
+}
+function seed(){
+  var companies=[
+    {id:'pg',name:'宝洁',en:'P&G'},
+    {id:'unilever',name:'联合利华',en:'Unilever'},
+    {id:'loreal',name:'欧莱雅',en:"L'Oréal"},
+    {id:'nestle',name:'雀巢',en:'Nestlé'},
+    {id:'coke',name:'可口可乐',en:'Coca-Cola'}
+  ];
+  var people=[
+    /* 宝洁 */
+    P('p01','许敏','pg','大中华区管理层','大中华区董事长兼首席执行官',null,{
+      tags:['品牌管理','电商化战略','高端化','本土创新'],school:'南京大学（1997年毕业，据公开报道）',
+      exp:'1997年以管培生加入宝洁，先后领导汰渍、飘柔、护舒宝、玉兰油等七个品牌；2015年起负责大中华区电商与媒体及品牌运营；2021年10月出任大中华区董事长兼CEO，为宝洁首位本土CEO。来源：第一财经2021-10-12、百度百科、美通社2026-11-07。',
+      updates:[
+        U('u1','2021-10-01','ai','title','大中华区副董事长、销售和品牌及品牌运营总裁','大中华区董事长兼首席执行官','第一财经（2021-10-12）','高'),
+        U('u2','2025-10-28','ai','org','品牌管理部（BRM）＋消费者与市场研究部（CMK）分设','合并为品牌增长部（One Brand Function），品牌团队直接对增长负责','见实/新浪财经（2025-10-28）','高')
+      ],
+      cv:{summary:'宝洁28年，从本土管培生成长为大中华区一把手；主导电商化、高端化与AI全链路应用，2026财年大中华区有机销售额重回增长。',
+        exp:[{period:'2021-10 至今',role:'宝洁大中华区董事长兼首席执行官',desc:'宝洁进入中国以来首位本土CEO，推动“引领品类发展”战略与组织放权。'},{period:'2015 - 2021',role:'大中华区电商总裁 / 品牌管理总裁 / 副董事长',desc:'组建中国电商事业部并升级为全域零售事业群，电商收入3年增长6倍。'},{period:'1997 - 2015',role:'管培生 → 多品牌负责人 → 亚太市场负责人',desc:'领导七个品牌六大品类，2011年外派新加坡分管亚太多国市场。'}],
+        edu:'南京大学（据百度百科/第一财经）',skills:['品牌战略','电商与全域零售','高端化','组织变革','AI应用']}}),
+    P('p02','何亚彬','pg','增长与新零售','大中华区首席增长官兼新零售总裁（据2022-2023年报道）','p01',{
+      tags:['增长战略','新零售'],unverified:true,
+      exp:'36氪2026-09-16统计表中列为2022-2023年宝洁大中华区CGO及新零售总裁，负责整体增长战略。现任职状态未获最新公开信息确认，建联前请先核实。'}),
+    P('p03','博瑞德','pg','全球美尚事业部','全球美尚事业部首席执行官（Freddy Bharucha）',null,{
+      tags:['美容品类','全球品牌组合'],
+      exp:'2015年6月接任宝洁大中华区美尚事业部总裁，后升任全球美尚事业部CEO；2026年7月出席宝洁中国创新开放日美尚专场。来源：中国网2015-07-02、新华网2026-07-30。全球条线，供对标参考。'}),
+    T('t01','品牌增长部负责人','pg','品牌增长部','待补全','p01','2025年9月新设部门（BRM+CMK合并），负责人未见公开报道，可通过招聘渠道/人脉补充'),
+    T('t02','数字与电商营销负责人','pg','数字与电商营销','待补全','p01','公开信息不足，待补充'),
+    T('t03','媒介负责人','pg','媒介','待补全','p01','公开信息不足，待补充'),
+    /* 联合利华 */
+    P('p04','Aseem Puri','unilever','东北亚区','东北亚地区总裁（含大中华区，2027-01-01生效）',null,{
+      tags:['区域损益','品牌操盘','20年联合利华'],school:'德里大学经济学学士、印度外贸学院（IIFT）MBA（据公开报道）',
+      exp:'2003年管培生加入联合利华，历任亚洲织物清洁品牌经理、全球营销经理、亚洲营销总监、泰国CEO等；2026年11月3日官宣出任东北亚地区总裁，大中华区归属该区域，任命2027年1月1日生效。来源：联合利华官网公告、证券时报2026-11-05、21经济网2026-11-04。',
+      updates:[U('u3','2026-11-03','ai','title','联合利华泰国负责人','东北亚地区总裁（含大中华区，2027-01-01生效）','联合利华官网公告/证券时报（2026-11-05）','高')],
+      cv:{summary:'联合利华20余年，从印度销售一线到全球品类营销再到区域CEO，2027年起执掌含大中华区的东北亚绩效单元。',
+        exp:[{period:'2027-01 起（已官宣）',role:'东北亚地区总裁',desc:'对区域内全品类损益负责，统筹本地内容、媒介与商务融合。'},{period:'2022 - 2026',role:'联合利华泰国CEO / 美妆与健康亚洲区CEO',desc:'据其领英信息，2026年起兼任美妆及健康业务亚洲区CEO。'},{period:'2003 - 2022',role:'销售 → 区域品牌经理 → 全球营销经理 → 亚洲营销总监',desc:'Surf Excel、OMO等品牌亚洲与全球操盘。'}],
+        edu:'德里大学经济学荣誉学士 · 印度外贸学院国际商务MBA',skills:['区域经营','品牌管理','全球营销','损益管理']}}),
+    P('p05','陈戈','unilever','大中华区','大中华区总裁、美妆与健康事业部中国区总经理','p04',{
+      tags:['数字化转型','高端化','快消20年+'],
+      exp:'曾任职宝洁、卡夫亨氏（11年，大中华区商业总裁）、菲仕兰（2019-2024中国区总裁）；2024年8月15日出任联合利华中国区总裁兼美妆与健康事业部中国区总经理。来源：小食代2024-08-09、北京商报2024-08-08、联合利华官网2026-10-15。注：到任时间以多源2024-08为准；汇报线未获官方完整披露，图中为示意。',
+      updates:[U('u4','2024-08-15','ai','title','菲仕兰中国区总裁','联合利华中国区总裁、美妆与健康事业部中国区总经理','小食代/北京商报（2024-08-08）','高')],
+      cv:{summary:'跨宝洁、卡夫亨氏、菲仕兰、联合利华的快消老将，以数字化变革与业务重塑见长，执掌菲仕兰中国期间连续4年双位数增长。',
+        exp:[{period:'2024-08 至今',role:'联合利华中国区总裁、美妆与健康事业部中国区总经理',desc:'主导在华数字化转型与高端化创新，2026年兼任联合利华（中国）投资公司董事长。'},{period:'2019 - 2024',role:'菲仕兰中国区总裁',desc:'美素佳儿市场份额升至行业前三，推动渠道下沉与数字化。'},{period:'2008 - 2019',role:'卡夫亨氏大中华区商业总裁等',desc:'11年卡夫亨氏多个领导职务。'}],
+        edu:'未公开',skills:['数字化转型','业务重塑','渠道策略','高端化']}}),
+    P('p06','李怡','unilever','营销','中国区首席营销官（待核实）','p05',{
+      tags:['品牌策略','数字营销','高端美妆'],unverified:true,
+      exp:'据微信公众号行业文章（2026-07-30）：2026年5月到任联合利华中国区首席营销官，负责美容与个人护理及家庭护理品牌策略与数字营销；此前任欧莱雅中国高档化妆品事业部市场负责人。单一来源，待核实。'}),
+    T('t04','个人护理营销负责人','unilever','个人护理','待补全','p05','公开信息不足，待补充'),
+    T('t05','家庭护理营销负责人','unilever','家庭护理','待补全','p05','公开信息不足，待补充'),
+    T('t06','数字营销负责人','unilever','数字营销','待补全','p05','公开信息不足，待补充'),
+    /* 欧莱雅 */
+    P('p07','Vincent Boinay','loreal','中国及北亚','中国首席执行官兼北亚总裁',null,{
+      tags:['旅游零售','区域管理','30年欧莱雅'],
+      exp:'欧莱雅30余年，2016年起任全球旅游零售总经理；2024年2月出任中国CEO兼北亚总裁，常驻上海。来源：Business Chief Asia（2023-11-27）。',
+      updates:[U('u5','2024-02-01','ai','title','全球旅游零售总经理','中国首席执行官兼北亚总裁','Business Chief Asia（2023-11-27）','高')]}),
+    P('p08','Laurence Ma','loreal','中国及北亚','中国副首席执行官（兼高档化妆品部中国总经理）','p07',{
+      tags:['高端品牌','兰蔻','多事业部统筹'],
+      exp:'约1997年加入欧莱雅，2021年起任高档化妆品部中国总经理，将兰蔻打造为中国高端市场领导品牌；2024年2月出任新设的中国副CEO，继续执掌高档部并统筹其他三个事业部。来源：Business Chief Asia（2023-11-27）。',
+      updates:[U('u6','2024-02-01','ai','title','高档化妆品部中国总经理','中国副首席执行官（兼高档化妆品部中国总经理）','Business Chief Asia（2023-11-27）','高')]}),
+    P('p09','李琳','loreal','营销','中国及北亚首席营销官（CDMO）','p07',{
+      tags:['数字营销','品牌传播','AI营销','25年欧莱雅'],school:'复旦大学（据公开报道）',
+      exp:'以管培生加入欧莱雅，从兰蔻产品经理起步；2009-2016年任植村秀、YSL品牌总经理；2016-2022年任科颜氏、欧珑等品牌总经理；2022-2024年首任中国及北亚CMO；2024-2026年任副总裁兼大众化妆品部总经理；2026年4月回归CMO/CDMO岗位，负责数字营销、品牌传播与AI营销战略。来源：新浪财经2026-04-29、美妆原料网2026-05-19。',
+      updates:[U('u7','2026-04-29','ai','title','大众化妆品部总经理','中国及北亚首席营销官（CDMO）','新浪财经/美妆原料网（2026-04-29）','高')],
+      cv:{summary:'欧莱雅25年，横跨品牌管理、业务运营与全域营销；两度执掌区域营销，当前聚焦AI营销战略落地。',
+        exp:[{period:'2026-04 至今',role:'中国及北亚首席营销官（CDMO）',desc:'负责数字营销、品牌传播与AI营销战略，搭建AI智能体应用层。'},{period:'2024 - 2026',role:'中国副总裁兼大众化妆品部总经理',desc:'执掌欧莱雅中国规模最大的业务板块。'},{period:'2009 - 2024',role:'植村秀/YSL/科颜氏/欧珑品牌总经理 → 首任区域CMO',desc:'多个高端品牌在华战略落地与区域营销体系搭建。'}],
+        edu:'复旦大学（据公开报道）',skills:['数字营销','AI营销','品牌传播','高端品牌运营']}}),
+    P('p10','马岚','loreal','事业部','副总裁，皮肤科学美容部总经理兼大众化妆品部总经理','p08',{
+      tags:['皮肤科学','功效护肤','双事业部'],
+      exp:'2005年加入欧莱雅，2013年任美宝莲品牌总经理，后执掌3CE；2020年起任皮肤科学美容事业部总经理（理肤泉、修丽可等）；2026年4月兼任大众化妆品部总经理，罕见同时执掌两大事业部。来源：百度百科、美妆原料网2026-05-19。',
+      updates:[U('u8','2026-04-29','ai','title','皮肤科学美容事业部总经理','副总裁，兼大众化妆品部总经理','美妆原料网（2026-05-19）','高')],
+      cv:{summary:'欧莱雅20年，从美宝莲到皮肤科学美容，将高增长事业部经验复制到大众板块。',
+        exp:[{period:'2026-04 至今',role:'副总裁，兼大众化妆品部总经理',desc:'同时执掌皮肤科学美容与大众化妆品两大事业部。'},{period:'2020 - 2026',role:'皮肤科学美容事业部总经理',desc:'理肤泉、修丽可等品牌近年双位数增长。'},{period:'2005 - 2020',role:'品牌营销经理 → 美宝莲总经理 → 3CE总经理',desc:'2013年起执掌美宝莲。'}],
+        edu:'未公开',skills:['事业部经营','功效护肤','品牌组合管理']}}),
+    P('p11','孟颖琪','loreal','大众化妆品部','巴黎欧莱雅中国品牌总经理','p10',{
+      tags:['品牌操盘','彩妆','护肤'],
+      exp:'2008年管培生加入欧莱雅中国，历任职村秀、巴黎欧莱雅、理肤泉；2013年管理巴黎欧莱雅彩妆品类；2022年任理肤泉中国品牌总监后升总经理；2025年4月1日调任巴黎欧莱雅中国品牌总经理。来源：美妆原料网（2025-05-14）。',
+      updates:[U('u9','2025-04-01','ai','title','理肤泉中国品牌总经理','巴黎欧莱雅中国品牌总经理','美妆原料网（2025-05-14）','高')],
+      cv:{summary:'欧莱雅17年本土培养的品牌总经理，横跨彩妆与护肤，从理肤泉调任巴黎欧莱雅。',
+        exp:[{period:'2025-04 至今',role:'巴黎欧莱雅中国品牌总经理',desc:'执掌大众线核心品牌。'},{period:'2022 - 2025',role:'理肤泉中国品牌总监 → 总经理',desc:'任内理肤泉保持高增长。'},{period:'2008 - 2022',role:'管培生 → 巴黎欧莱雅彩妆品类负责人 → 业务总监',desc:'多品牌多岗位轮岗。'}],
+        edu:'未公开（2008年管培生加入）',skills:['品牌操盘','彩妆','护肤','新品上市']}}),
+    P('p12','黄冰榕','loreal','增长与电商','北亚及中国区首席增长官（待核实）','p07',{
+      tags:['电商','增长'],unverified:true,
+      exp:'据36氪2026-09-16统计表：2026年4月起任欧莱雅北亚及中国区CGO，负责集团在中国与北亚的电商业务等。单一来源，待核实。'}),
+    T('t07','专业美发产品部营销负责人','loreal','专业美发产品部','待补全','p08','公开信息不足，待补充'),
+    T('t08','理肤泉中国品牌总经理','loreal','皮肤科学美容部','待补全','p10','孟颖琪2025年4月调任巴黎欧莱雅后，继任者未见公开报道'),
+    /* 雀巢 */
+    P('p13','马凯思','nestle','大中华区','大中华区董事长兼首席执行官（Kais Marzouki）',null,{
+      tags:['数智化','多品牌','品牌建设'],
+      exp:'2026年11月进博会期间阐述雀巢中国两大方向：数智化与AI赋能、针对性满足消费者需求；推出升级后的全球品牌建设方法BBNW。来源：和讯消费2026-11-06。'}),
+    P('p14','谢国耀','nestle','营养品业务','大中华区高级副总裁、营养品业务单元负责人（Joel Seah）','p13',{
+      tags:['婴幼儿营养','双核驱动'],
+      exp:'负责启赋、能恩等品牌；2026年11月率营养品业务整合后新阵容亮相进博会，提出“科研领航、双核驱动”战略。来源：和讯网2026-11-09。'}),
+    P('p15','徐祯','nestle','营养品业务','营养品市场部负责人','p14',{
+      tags:['配方传播','科研营销'],
+      exp:'2026年11月进博会期间代表雀巢营养品市场部解读10HMO配方创新与科研证据链。来源：和讯网2026-11-09。'}),
+    P('p16','陈继丰','nestle','数字中心','数字中心大数据负责人（据2024年报道，待核实）','p13',{
+      tags:['数据中台','电商BI'],unverified:true,
+      exp:'据一财商学院2024年12月对话：负责雀巢中国digital hub数据平台，打通十多个BU、100多个渠道的电商BI，数据汇总从月更提速至T+1。现任职状态待核实。'}),
+    T('t09','咖啡与饮品营销负责人','nestle','咖啡与饮品','待补全','p13','公开信息不足，待补充'),
+    /* 可口可乐 */
+    P('p17','柏瑞凯','coke','全球管理层','全球首席执行官（Henrique Braun，2026-03-31生效）',null,{
+      tags:['全品类饮料','中国市场经验'],school:'里约热内卢联邦大学农业工程学士、密歇根州立大学硕士、佐治亚州立大学MBA（据百度百科）',
+      exp:'1996年管培生加入可口可乐，2013-2016年任大中华区及韩国总裁（亲历中国装瓶系统重组、引进乔雅即饮咖啡）；2025年任COO，2026年3月31日接任全球CEO。来源：百度百科、可口可乐公司财报电话会（2026-02）。全球条线，供对标参考。'}),
+    P('p18','睿胜辉','coke','新兴大型市场集群','印度及西南亚兼新兴大型市场集群负责人（Sanket Ray，含大中华区及日韩）','p17',{
+      tags:['亚洲市场','中国经验'],
+      exp:'曾任可口可乐中国内地首席运营官；2026年3月31日起职责扩大，统管印度、西南亚、大中华区及蒙古、日韩市场，直接向CEO柏瑞凯汇报。来源：可口可乐公司公告（媒体转述，2026-01-15）。',
+      updates:[U('u10','2026-03-31','ai','title','印度及西南亚业务单元总裁','新兴大型市场集群负责人（新增大中华区及蒙古、日韩）','可口可乐公司公告（媒体转述2026-01-15）','中')]}),
+    P('p19','吉路克','coke','大中华区','大中华区总裁（待核实）','p18',{
+      tags:['区域管理'],unverified:true,
+      exp:'据微信公众号2026-01-15文章，可口可乐架构调整中“现任大中华区总裁吉路克职位暂未变动”。单一来源，且后续大区整合可能影响该岗位，建联前请先核实。'}),
+    P('p20','金忆','coke','太古可口可乐（装瓶系统）','太古可口可乐大中华区首席执行官（Hunter Jin，新设）',null,{
+      tags:['全渠道','本土+国际','30年饮料'],
+      exp:'2004年加入太古可口可乐，历任上海申美、江苏、郑州公司职务，2011年36岁任郑州总经理（当时系统内最年轻区域总）；2018年赴美国，2022年起负责东南亚及港台；2026年4月1日出任新设的大中华区CEO，统筹内地港台。来源：界面新闻2026-04-21、小食代2026-04-21、国际金融报2026-05-29。装瓶系统与可口可乐公司平行，单列参考。',
+      updates:[U('u11','2026-04-01','ai','title','太古饮料东南亚及港台地区负责人','太古可口可乐大中华区首席执行官（新设）','界面新闻/小食代（2026-04-21）','高')],
+      cv:{summary:'太古体系21年，从销售运营到跨区域掌门，兼具本土深耕与国际化视野；履新后24小时内投产昆山、广州两座世界级新厂。',
+        exp:[{period:'2026-04 至今',role:'太古可口可乐大中华区首席执行官',desc:'新设岗位，统筹中国大陆、港台市场，推进“致胜2035”战略。'},{period:'2022 - 2026',role:'东南亚、港台地区负责人',desc:'此前2018年起拓展美国市场。'},{period:'2004 - 2018',role:'中国销售运营经理 → 郑州总经理（2011，36岁）',desc:'当时可口可乐系统中国区最年轻的区域公司总经理。'}],
+        edu:'未公开',skills:['全渠道运营','装瓶系统管理','供应链投资','国际化']}}),
+    T('t10','可口可乐中国营销负责人','coke','营销','待补全','p19','公开信息不足，待补充（全球CMO为Manolo Arroyo，2020年报道，现状未核实）'),
+    T('t11','太古可口可乐大中华区营销负责人','coke','太古可口可乐','待补全','p20','公开信息不足，待补充')
+  ];
+  return {companies:companies,people:people,lastRun:'2026-11-16'};
+}
+/* SECTION: state */
+var LS_KEY='tm-mapping-real-v2';
+var state={view:'org',company:'pg',query:'',fCompany:'',fStatus:'',fRecent:false,updFilter:'',drawerId:null,tab:'info',editMode:false,nodeEditId:null,nodeDraft:null,personEditId:null};
+var DB=null;
+function loadLocal(){
+  try{var raw=localStorage.getItem(LS_KEY);if(raw){var value=JSON.parse(raw);if(value&&value.people&&value.companies)return value;}}catch(e){}
+  return null;
+}
+function encodeRows(db){
+  var rows=[];
+  db.companies.forEach(function(c){rows.push({record_id:'company:'+c.id,record_type:'company',company_id:c.id,payload:c});});
+  db.people.forEach(function(p){var payload=JSON.parse(JSON.stringify(p));if(payload.cvFile&&payload.cvFile.dataUrl)delete payload.cvFile.dataUrl;rows.push({record_id:'person:'+p.id,record_type:'person',company_id:p.company||null,payload:payload});});
+  return rows;
+}
+function applyRemoteRows(rows){
+  var companies=[],people=[];
+  rows.forEach(function(row){if(row.record_type==='company')companies.push(row.payload);if(row.record_type==='person')people.push(row.payload);});
+  DB={companies:companies,people:people,lastRun:(loadLocal()||{}).lastRun||'2026-11-16'};
+  remoteCache={};
+  rows.forEach(function(row){remoteCache[row.record_id]=JSON.stringify(row.payload);});
+  try{localStorage.setItem(LS_KEY,JSON.stringify(DB));}catch(e){}
+}
+async function fetchRemoteRows(){
+  var result=await supabaseClient.schema('mapping').from('records').select('record_id,record_type,company_id,payload');
+  if(result.error)throw result.error;
+  return result.data||[];
+}
+async function initializeMapping(){
+  var userResult=await supabaseClient.auth.getUser();
+  if(userResult.error||!userResult.data.user){showAuthGate();return;}
+  var membership=await supabaseClient.schema('mapping').from('members').select('role,is_active').eq('user_id',userResult.data.user.id).maybeSingle();
+  if(membership.error)throw membership.error;
+  if(!membership.data||!membership.data.is_active){showAuthGate('此邮箱尚未获准访问，请联系 Mapping 管理员。');await supabaseClient.auth.signOut();return;}
+  currentMappingRole=membership.data.role;
+  if(currentMappingRole!=='owner')document.getElementById('resetBtn').style.display='none';
+  var rows=await fetchRemoteRows();
+  if(!rows.length){DB=loadLocal()||seed();var initial=encodeRows(DB);if(initial.length){var inserted=await supabaseClient.schema('mapping').from('records').upsert(initial,{onConflict:'record_id'});if(inserted.error)throw inserted.error;}rows=await fetchRemoteRows();}
+  applyRemoteRows(rows);
+  document.getElementById('authGate').style.display='none';
+  bind();renderAll();
+  supabaseClient.channel('mapping-records-live')
+    .on('postgres_changes',{event:'*',schema:'mapping',table:'records'},function(){
+      if(remoteSaving){pendingRemoteReload=true;return;}
+      refreshFromRemote();
+    }).subscribe();
+}
+async function refreshFromRemote(){
+  try{var rows=await fetchRemoteRows();applyRemoteRows(rows);renderAll();if(state.drawerId)renderDrawer();toast('已同步其他成员的更新');}
+  catch(e){console.error(e);toast('实时同步失败，请刷新页面重试');}
+}
+function showAuthGate(message){
+  document.getElementById('authGate').style.display='flex';
+  if(message)document.getElementById('authMessage').textContent=message;
+}
+function queueRemoteSave(){
+  clearTimeout(remoteSaveTimer);
+  remoteSaveTimer=setTimeout(syncChangedRecords,450);
+}
+async function syncChangedRecords(){
+  if(!DB||remoteSaving)return;
+  var current=encodeRows(DB),next={};current.forEach(function(row){next[row.record_id]=JSON.stringify(row.payload);});
+  var changed=current.filter(function(row){return remoteCache[row.record_id]!==next[row.record_id];});
+  var deleted=Object.keys(remoteCache).filter(function(id){return !next[id];});
+  if(!changed.length&&!deleted.length)return;
+  remoteSaving=true;
+  try{
+    if(changed.length){var upsert=await supabaseClient.schema('mapping').from('records').upsert(changed,{onConflict:'record_id'});if(upsert.error)throw upsert.error;}
+    if(deleted.length){var remove=await supabaseClient.schema('mapping').from('records').delete().in('record_id',deleted);if(remove.error)throw remove.error;}
+    current.forEach(function(row){remoteCache[row.record_id]=next[row.record_id];});
+    deleted.forEach(function(id){delete remoteCache[id];});
+    toast('已保存并同步到团队');
+  }catch(e){console.error(e);toast('云端保存失败，请检查登录权限后重试');}
+  finally{remoteSaving=false;if(pendingRemoteReload){pendingRemoteReload=false;refreshFromRemote();}}
+}
+function save(){
+  try{localStorage.setItem(LS_KEY,JSON.stringify(DB));}catch(e){}
+  queueRemoteSave();
+  return true;
+}
+function person(id){for(var i=0;i<DB.people.length;i++){if(DB.people[i].id===id)return DB.people[i];}return null;}
+function coName(id){for(var i=0;i<DB.companies.length;i++){if(DB.companies[i].id===id)return DB.companies[i].name;}return id;}
+function today(){return fmt(new Date());}
+function fmt(d){var m=d.getMonth()+1,day=d.getDate();return d.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(day<10?'0':'')+day;}
+function addDays(base,n){var d=new Date(base+'T00:00:00');d.setDate(d.getDate()+n);return fmt(d);}
+function daysDiff(a,b){return Math.round((new Date(a+'T00:00:00')-new Date(b+'T00:00:00'))/86400000);}
+function statusIdx(s){var i=STATUS.indexOf(s);return i<0?0:i;}
+function uid(){return 'x'+Date.now()+Math.floor(Math.random()*10000);}
+function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');clearTimeout(toast._t);toast._t=setTimeout(function(){t.classList.remove('on');},3200);}
+function cloneTpl(id){return document.getElementById(id).content.firstElementChild.cloneNode(true);}
+function fill(root,map){for(var k in map){var el=root.querySelector('[data-f="'+k+'"]');if(el){el.textContent=(map[k]===null||map[k]===undefined||map[k]==='')?'—':map[k];}}return root;}
+function makePill(status){var s=document.createElement('span');s.className='pill s'+statusIdx(status);s.textContent=status;return s;}
+function matchQ(p,q){
+  if(!q)return true;q=q.toLowerCase();
+  var hay=[p.name,p.title,coName(p.company),p.dept,p.school||'',p.exp||'',(p.tags||[]).join(' '),p.priv?p.priv.note:'',p.note||''].join(' ').toLowerCase();
+  return hay.indexOf(q)>=0;
+}
+function unresolvedConflicts(p){var r=[];(p.updates||[]).forEach(function(u){if(u.type==='conflict'&&!u.resolved)r.push(u);});return r;}
+function latestUpd(p){var d='';(p.updates||[]).forEach(function(u){if(u.type!=='conflict'&&u.date>d)d=u.date;});return d;}
+function descendants(id){
+  var out={},changed=true;out[id]=true;
+  while(changed){changed=false;DB.people.forEach(function(p){if(p.reportsTo&&out[p.reportsTo]&&!out[p.id]){out[p.id]=true;changed=true;}});}
+  delete out[id];return out;
+}
+function nodeName(id){if(!id)return '（顶层）';var p=person(id);return p?(p.name+'｜'+p.title):id;}
+function logManual(p,field,before,after){
+  if((before||'')!==(after||'')){p.updates.push(U(uid(),today(),'manual',field,before||'',after||'','','我'));}
+}
+function reportsOptions(sel,companyId,excludeId,value){
+  sel.innerHTML='';
+  var top=document.createElement('option');top.value='';top.textContent='（顶层节点）';sel.appendChild(top);
+  var excl=excludeId?descendants(excludeId):{};
+  DB.people.forEach(function(p){
+    if(p.company!==companyId)return;
+    if(excludeId&&(p.id===excludeId||excl[p.id]))return;
+    var o=document.createElement('option');o.value=p.id;o.textContent=p.name+'｜'+p.title;sel.appendChild(o);
+  });
+  sel.value=value||'';
+  if(sel.value!==(value||'')){sel.value='';}
+}
+/* SECTION: render stats & nav */
+function renderStats(){
+  var bar=document.getElementById('statsBar');bar.innerHTML='';
+  var real=DB.people.filter(function(p){return !p.vacancy;});
+  var contacted=real.filter(function(p){return statusIdx(p.status)>=1&&p.status!=='勿扰';}).length;
+  var todo=real.filter(function(p){return p.followUp;}).length;
+  var week=0,cut=addDays(today(),-7);
+  real.forEach(function(p){(p.updates||[]).forEach(function(u){if(u.date>=cut)week++;});});
+  var items=[{label:'在库人选',value:real.length,cls:''},{label:'已建联',value:contacted,cls:'hot'},{label:'待跟进',value:todo,cls:'warn'},{label:'近7天动态',value:week,cls:'hot'}];
+  items.forEach(function(it){var el=cloneTpl('t-stat');if(it.cls)el.classList.add(it.cls);fill(el,it);bar.appendChild(el);});
+  var badge=document.getElementById('todoBadge');
+  if(todo>0){badge.style.display='';badge.textContent=todo;}else{badge.style.display='none';}
+}
+function renderNav(){
+  document.querySelectorAll('#navTabs button').forEach(function(b){b.classList.toggle('on',b.dataset.view===state.view);});
+  document.querySelectorAll('.view').forEach(function(v){v.classList.toggle('on',v.id==='view-'+state.view);});
+}
+/* SECTION: org view */
+function renderCompanyChips(){
+  var box=document.getElementById('companyChips');box.innerHTML='';
+  DB.companies.forEach(function(c){
+    var b=document.createElement('button');b.className='chip'+(state.company===c.id?' on':'');b.textContent=c.name+(c.en?' '+c.en:'');
+    b.addEventListener('click',function(){state.company=c.id;renderOrg();});
+    box.appendChild(b);
+  });
+}
+function buildNode(p){
+  var el=cloneTpl('t-node');
+  if(p.vacancy){
+    el.classList.add('vacancy');
+    fill(el,{name:p.name,title:p.title,status:'待补全'});
+    el.querySelector('.dot').style.background='#cbd5e1';
+    el.title=p.note||'';
+  }else{
+    if(!p.reportsTo)el.classList.add('root');
+    fill(el,{name:p.name,title:p.title,status:p.status});
+    el.querySelector('.dot').style.background=['#9ca3af','#2563eb','#4f46e5','#d97706','#7c3aed','#059669','#dc2626'][statusIdx(p.status)];
+    var flags=el.querySelector('.flags');
+    if(p.followUp){var f=cloneTpl('t-flag');f.classList.add('fu');f.textContent='跟';f.title='待跟进：'+p.followUp;flags.appendChild(f);}
+    if(unresolvedConflicts(p).length){var f2=cloneTpl('t-flag');f2.classList.add('cf');f2.textContent='!';f2.title='公开信息与人工记录冲突，待核实';flags.appendChild(f2);}
+    if(p.unverified){var f3=cloneTpl('t-flag');f3.classList.add('uv');f3.textContent='核';f3.title='部分信息来自单一来源，待核实';flags.appendChild(f3);}
+  }
+  if(state.query&&!matchQ(p,state.query))el.classList.add('dim');
+  if(state.editMode){
+    var acts=document.createElement('div');acts.className='node-acts';
+    var b1=document.createElement('button');b1.textContent='编辑';
+    b1.addEventListener('click',function(ev){ev.stopPropagation();openNodeModal(p.id,null);});
+    var b2=document.createElement('button');b2.textContent='＋下属';
+    b2.addEventListener('click',function(ev){ev.stopPropagation();openNodeModal(null,{company:p.company,reportsTo:p.id});});
+    acts.appendChild(b1);acts.appendChild(b2);
+    el.appendChild(acts);
+    el.addEventListener('click',function(){openNodeModal(p.id,null);});
+  }else{
+    el.addEventListener('click',function(){
+      if(p.vacancy){toast('待补全岗位：'+p.name+' · '+(p.note||'开启“编辑架构”可补充信息'));}
+      else{openDrawer(p.id,'info');}
+    });
+  }
+  return el;
+}
+function renderOrg(){
+  renderCompanyChips();
+  var co=null;DB.companies.forEach(function(c){if(c.id===state.company)co=c;});
+  if(!co&&DB.companies.length){state.company=DB.companies[0].id;co=DB.companies[0];}
+  document.getElementById('orgTitle').textContent=co?(co.name+(co.en?' '+co.en:'')+' · 营销条线组织架构'):'组织架构';
+  var em=document.getElementById('editModeBtn');
+  em.textContent=state.editMode?'退出编辑':'编辑架构';
+  em.classList.toggle('editmode-on',state.editMode);
+  var tree=document.getElementById('orgTree');tree.innerHTML='';
+  var members=DB.people.filter(function(p){return p.company===state.company;});
+  function buildUl(parentId){
+    var kids=members.filter(function(p){return p.reportsTo===parentId;});
+    if(!kids.length)return null;
+    var ul=document.createElement('ul');
+    kids.forEach(function(k){
+      var li=document.createElement('li');
+      li.appendChild(buildNode(k));
+      var sub=buildUl(k.id);
+      if(sub)li.appendChild(sub);
+      ul.appendChild(li);
+    });
+    return ul;
+  }
+  var roots=members.filter(function(p){return !p.reportsTo;});
+  var rootUl=document.createElement('ul');
+  roots.forEach(function(r){
+    var li=document.createElement('li');
+    li.appendChild(buildNode(r));
+    var sub=buildUl(r.id);
+    if(sub)li.appendChild(sub);
+    rootUl.appendChild(li);
+  });
+  if(!members.length){
+    var em2=document.createElement('div');em2.className='empty';
+    var b=document.createElement('b');b.textContent='该公司还没有架构节点';em2.appendChild(b);
+    em2.appendChild(document.createTextNode('点击右上「＋顶层节点」开始绘制，或「编辑架构」中添加'));
+    tree.appendChild(em2);
+  }else{tree.appendChild(rootUl);}
+}
+/* SECTION: list view */
+function renderListFilters(){
+  var fc=document.getElementById('fCompany');fc.innerHTML='';
+  var all=document.createElement('option');all.value='';all.textContent='全部公司';fc.appendChild(all);
+  DB.companies.forEach(function(c){var o=document.createElement('option');o.value=c.id;o.textContent=c.name;fc.appendChild(o);});
+  fc.value=state.fCompany;
+  var fs=document.getElementById('fStatus');
+  if(fs.options.length<=1){STATUS.forEach(function(s){var o=document.createElement('option');o.value=s;o.textContent=s;fs.appendChild(o);});}
+  fs.value=state.fStatus;document.getElementById('fRecent').checked=state.fRecent;
+}
+function renderList(){
+  renderListFilters();
+  var grid=document.getElementById('peopleGrid');grid.innerHTML='';
+  var cut=addDays(today(),-30);
+  var rows=DB.people.filter(function(p){
+    if(p.vacancy)return false;
+    if(state.fCompany&&p.company!==state.fCompany)return false;
+    if(state.fStatus&&p.status!==state.fStatus)return false;
+    if(state.fRecent&&latestUpd(p)<cut)return false;
+    return matchQ(p,state.query);
+  });
+  rows.forEach(function(p){
+    var el=cloneTpl('t-pcard');
+    fill(el,{name:p.name,company:coName(p.company),title:p.title+' · '+p.dept});
+    var pillSlot=el.querySelector('[data-f="pill"]');pillSlot.replaceWith(makePill(p.status));
+    if(p.unverified){el.querySelector('.r1').appendChild(cloneTpl('t-uvtag'));}
+    var tags=el.querySelector('.tags');
+    (p.tags||[]).slice(0,3).forEach(function(t){var s=cloneTpl('t-tag');s.textContent=t;tags.appendChild(s);});
+    var lu=latestUpd(p);
+    el.querySelector('[data-f="upd"]').textContent=lu?('最近动态 '+lu):'近30天无动态';
+    var fu=el.querySelector('[data-f="follow"]');
+    if(p.followUp){var over=p.followUp<today();fu.textContent=(over?'已逾期 ':'待跟进 ')+p.followUp;if(over)fu.classList.add('over');}
+    else{fu.style.display='none';}
+    el.addEventListener('click',function(){openDrawer(p.id,'info');});
+    grid.appendChild(el);
+  });
+  document.getElementById('listEmpty').style.display=rows.length?'none':'';
+  document.getElementById('searchCount').textContent=state.query?('命中 '+rows.length+' 人'):'';
+}
+/* SECTION: updates view */
+function allUpdates(){
+  var arr=[];
+  DB.people.forEach(function(p){if(p.vacancy)return;(p.updates||[]).forEach(function(u){arr.push({p:p,u:u});});});
+  arr.sort(function(a,b){return a.u.date<b.u.date?1:-1;});
+  return arr;
+}
+function updTypeLabel(t){return t==='ai'?'公开动态':(t==='manual'?'人工编辑':'待核实冲突');}
+function buildUpdItem(p,u,showWho){
+  var el=cloneTpl('t-upd');
+  var who=el.querySelector('[data-f="who"]');
+  if(showWho){who.textContent=p.name+' · '+coName(p.company);who.addEventListener('click',function(){openDrawer(p.id,'updates');});}
+  else{who.style.display='none';}
+  var badge=el.querySelector('[data-f="type"]');badge.textContent=updTypeLabel(u.type);badge.classList.add(u.type);
+  el.querySelector('.rail .dot').style.background=u.type==='ai'?'#2563eb':(u.type==='manual'?'#059669':'#dc2626');
+  fill(el,{date:u.date,field:(FIELD_LABEL[u.field]||u.field)+'：',before:u.before||'（空）',after:u.after});
+  var srcBits=[];
+  if(u.type==='manual'){srcBits.push('编辑人：'+(u.by||'我'));}
+  else{if(u.source)srcBits.push('来源：'+u.source);if(u.confidence)srcBits.push('置信度：'+u.confidence);}
+  el.querySelector('[data-f="src"]').textContent=srcBits.join(' · ');
+  if(u.type==='conflict'){
+    if(!u.resolved){
+      var rz=el.querySelector('.resolve');rz.style.display='';
+      rz.querySelector('[data-act="keep"]').addEventListener('click',function(){resolveConflict(p.id,u.id,'kept');});
+      rz.querySelector('[data-act="adopt"]').addEventListener('click',function(){resolveConflict(p.id,u.id,'adopted');});
+    }else{
+      var rn=el.querySelector('[data-f="resolved"]');rn.style.display='';
+      rn.textContent=u.resolved==='kept'?'已处理：保留人工记录，忽略本次公开信息':'已处理：采纳公开信息并更新字段';
+    }
+  }
+  return el;
+}
+function renderUpdates(){
+  document.getElementById('updMeta').textContent='上次核查：'+DB.lastRun+' · 公开动态均标注来源与日期；人工编辑自动留痕；仅记录发生变化的字段。';
+  var list=document.getElementById('updList');list.innerHTML='';
+  var arr=allUpdates().filter(function(x){return !state.updFilter||x.u.type===state.updFilter;});
+  arr.forEach(function(x){list.appendChild(buildUpdItem(x.p,x.u,true));});
+  document.getElementById('updEmpty').style.display=arr.length?'none':'';
+  document.querySelectorAll('#updFilter .chip').forEach(function(c){c.classList.toggle('on',c.dataset.f===state.updFilter);});
+}
+function resolveConflict(pid,uid_,mode){
+  var p=person(pid);if(!p)return;
+  var u=null;(p.updates||[]).forEach(function(x){if(x.id===uid_)u=x;});
+  if(!u)return;
+  u.resolved=mode;
+  if(mode==='adopted'){
+    p[u.field]=u.after;
+    p.updates.push(U(uid(),today(),'ai',u.field,u.before,u.after,u.source+'（人工确认采纳）',u.confidence));
+    toast('已采纳公开信息，'+(FIELD_LABEL[u.field]||u.field)+'已更新');
+  }else{toast('已保留人工记录，本次公开信息仅作留痕');}
+  save();renderAll();if(state.drawerId===pid)renderDrawer();
+}
+function simCheck(){
+  DB.lastRun=today();save();renderUpdates();renderStats();
+  toast('周度核查完成：未发现字段变化，未生成新记录（演示“信息未变不记录”机制；真实AI周更需接入搜索服务）');
+}
+/* SECTION: todo view */
+function renderTodo(){
+  var list=document.getElementById('todoList');list.innerHTML='';
+  var rows=DB.people.filter(function(p){return !p.vacancy&&p.followUp;});
+  rows.sort(function(a,b){return a.followUp<b.followUp?-1:1;});
+  rows.forEach(function(p){
+    var el=cloneTpl('t-todo');
+    fill(el,{name:p.name+' · '+coName(p.company),title:p.title});
+    var due=el.querySelector('[data-f="due"]');
+    var diff=daysDiff(p.followUp,today());
+    if(diff<0){due.textContent='已逾期 '+(-diff)+' 天 · '+p.followUp;due.classList.add('over');}
+    else if(diff===0){due.textContent='今天到期';}
+    else{due.textContent=diff+' 天后 · '+p.followUp;}
+    el.querySelector('[data-act="open"]').addEventListener('click',function(){openDrawer(p.id,'contacts');});
+    el.querySelector('[data-act="delay"]').addEventListener('click',function(){p.followUp=addDays(p.followUp,30);save();renderAll();toast(p.name+' 的跟进已延后1个月');});
+    el.querySelector('[data-act="done"]').addEventListener('click',function(){p.followUp=null;save();renderAll();toast('已完成对 '+p.name+' 的跟进');});
+    list.appendChild(el);
+  });
+  document.getElementById('todoEmpty').style.display=rows.length?'none':'';
+}
+/* SECTION: drawer */
+function openDrawer(id,tab){
+  var p=person(id);if(!p||p.vacancy)return;
+  state.drawerId=id;state.tab=tab||'info';
+  document.getElementById('overlay').classList.add('on');
+  document.getElementById('drawer').classList.add('on');
+  document.body.style.overflow='hidden';
+  renderDrawer();
+}
+function closeDrawer(){
+  state.drawerId=null;
+  document.getElementById('overlay').classList.remove('on');
+  document.getElementById('drawer').classList.remove('on');
+  document.body.style.overflow='';
+}
+function kvRow(k,v,locked){
+  var el=cloneTpl('t-kv');fill(el,{k:k,v:v});
+  if(locked){el.querySelector('[data-f="lock"]').style.display='';}
+  return el;
+}
+function renderDrawer(){
+  var p=person(state.drawerId);if(!p||p.vacancy){closeDrawer();return;}
+  document.getElementById('dwName').textContent=p.name;
+  document.getElementById('dwTitle').textContent=p.title+' · '+coName(p.company)+' · '+p.dept;
+  var pillSlot=document.getElementById('dwStatusPill');pillSlot.innerHTML='';pillSlot.appendChild(makePill(p.status));
+  var sel=document.getElementById('dwStatusSel');sel.innerHTML='';
+  STATUS.forEach(function(s){var o=document.createElement('option');o.value=s;o.textContent=s;sel.appendChild(o);});
+  sel.value=p.status;
+  var fu=document.getElementById('dwFollow');
+  if(p.followUp){fu.style.display='';var over=p.followUp<today();fu.textContent=(over?'跟进已逾期：':'待跟进：')+p.followUp;fu.classList.toggle('over',over);}
+  else{fu.style.display='none';}
+  var dup=document.getElementById('dwDupBanner');dup.className='dw-banner';
+  var other=null;(p.contacts||[]).forEach(function(c){if(c.by&&c.by!=='我')other=c;});
+  if(other){dup.classList.add('warn');dup.textContent='防撞单提醒：'+other.by+' 曾于 '+other.date+' 通过'+other.channel+'建联，结果「'+other.result+'」。请先与同事对齐再联系，避免重复打扰候选人。';}
+  var cf=document.getElementById('dwConflictBanner');cf.className='dw-banner';
+  var cfs=unresolvedConflicts(p);
+  if(cfs.length){cf.classList.add('conflict');cf.textContent='有 '+cfs.length+' 条公开信息与人工记录冲突待核实，请到「更新记录」处理。AI 不会覆盖你锁定的信息。';}
+  var vb=document.getElementById('dwVerifyBanner');vb.className='dw-banner';
+  if(p.unverified){vb.classList.add('verify');vb.textContent='待核实：该人选部分信息来自单一公开来源，已在履历摘要中注明，建联前请先核实。';}
+  document.querySelectorAll('#dwTabs button').forEach(function(b){b.classList.toggle('on',b.dataset.tab===state.tab);});
+  document.querySelectorAll('.dw-sec').forEach(function(s){s.classList.toggle('on',s.id==='sec-'+state.tab);});
+  renderInfoTab(p);renderCvTab(p);renderUpdTab(p);renderCtTab(p);
+}
+function renderInfoTab(p){
+  var pub=document.getElementById('pubFields');pub.innerHTML='';
+  pub.appendChild(kvRow('现任职位',p.title,p.locked.indexOf('title')>=0));
+  pub.appendChild(kvRow('公司',coName(p.company),false));
+  pub.appendChild(kvRow('部门',p.dept,p.locked.indexOf('dept')>=0));
+  pub.appendChild(kvRow('汇报对象',nodeName(p.reportsTo),false));
+  pub.appendChild(kvRow('技能标签',(p.tags||[]).join('、'),false));
+  pub.appendChild(kvRow('教育背景',p.school,false));
+  pub.appendChild(kvRow('履历摘要',p.exp,false));
+  var priv=document.getElementById('privFields');priv.innerHTML='';
+  priv.appendChild(kvRow('手机号',p.priv.phone,false));
+  priv.appendChild(kvRow('微信',p.priv.wechat,false));
+  priv.appendChild(kvRow('期望薪酬',p.priv.salary,false));
+  priv.appendChild(kvRow('意向等级',p.priv.intent,false));
+  priv.appendChild(kvRow('信息来源',p.priv.source,false));
+  priv.appendChild(kvRow('备注',p.priv.note,false));
+}
+function renderCvTab(p){
+  var fbox=document.getElementById('cvFileBox');fbox.innerHTML='';
+  var box=document.getElementById('cvBox');box.innerHTML='';
+  var empty=document.getElementById('cvEmpty');
+  if(p.cvFile){
+    var fe=cloneTpl('t-cvfile');
+    fe.querySelector('[data-f="name"]').textContent='附件：'+p.cvFile.name;
+    fbox.appendChild(fe);
+    var iframe=fe.querySelector('iframe');
+    if(p.cvFile.storagePath){
+      supabaseClient.storage.from('mapping-cv').createSignedUrl(p.cvFile.storagePath,3600).then(function(result){if(result.data)iframe.src=result.data.signedUrl;else toast('CV 预览链接生成失败');});
+    }else if(p.cvFile.dataUrl){iframe.src=p.cvFile.dataUrl;}
+    fe.querySelector('[data-act="delcv"]').addEventListener('click',async function(){
+      if(!confirm('删除该PDF附件？'))return;
+      if(p.cvFile.storagePath){var removed=await supabaseClient.storage.from('mapping-cv').remove([p.cvFile.storagePath]);if(removed.error){toast('删除附件失败');return;}}
+      p.cvFile=null;save();renderDrawer();toast('附件已删除');
+    });
+  }
+  if(!p.cv){empty.style.display=(p.cvFile?'none':'');return;}
+  empty.style.display='none';
+  var el=cloneTpl('t-cv');
+  fill(el,{name:p.name,title:p.title+' · '+coName(p.company),summary:p.cv.summary,edu:p.cv.edu});
+  var exps=el.querySelector('.cv-exps');
+  p.cv.exp.forEach(function(e){var it=cloneTpl('t-cv-exp');fill(it,e);exps.appendChild(it);});
+  var sk=el.querySelector('.cv-skills');
+  p.cv.skills.forEach(function(s){var t=cloneTpl('t-tag');t.textContent=s;sk.appendChild(t);});
+  box.appendChild(el);
+}
+function renderUpdTab(p){
+  var list=document.getElementById('dwUpdList');list.innerHTML='';
+  var arr=(p.updates||[]).slice().sort(function(a,b){return a.date<b.date?1:-1;});
+  arr.forEach(function(u){list.appendChild(buildUpdItem(p,u,false));});
+  document.getElementById('dwUpdEmpty').style.display=arr.length?'none':'';
+}
+function renderCtTab(p){
+  var list=document.getElementById('ctList');list.innerHTML='';
+  var arr=(p.contacts||[]).slice().sort(function(a,b){return a.date<b.date?1:-1;});
+  arr.forEach(function(c){
+    var el=cloneTpl('t-ct');
+    fill(el,{by:c.by,date:c.date,channel:'渠道：'+c.channel,note:c.note||'（无纪要）'});
+    var rs=el.querySelector('[data-f="result"]');rs.textContent=c.result;
+    var map={'暂无意向':'s3','沟通中':'s2','已建联':'s1','有意向':'s2','推荐面试':'s4','已入职':'s5','勿扰':'s6','未接通':'s0'};
+    rs.classList.add(map[c.result]||'s0');
+    list.appendChild(el);
+  });
+  document.getElementById('ctEmpty').style.display=arr.length?'none':'';
+}
+/* SECTION: person edit */
+function openPersonModal(id){
+  state.personEditId=id;
+  var p=id?person(id):null;
+  document.getElementById('pmHeading').textContent=p?'编辑人选资料':'新增人选';
+  var cs=document.getElementById('pmCompany');cs.innerHTML='';
+  DB.companies.forEach(function(c){var o=document.createElement('option');o.value=c.id;o.textContent=c.name;cs.appendChild(o);});
+  cs.value=p?p.company:state.company;
+  reportsOptions(document.getElementById('pmReports'),cs.value,id,p?p.reportsTo:'');
+  document.getElementById('pmName').value=p?p.name:'';
+  document.getElementById('pmTitle').value=p?p.title:'';
+  document.getElementById('pmDept').value=p?p.dept:'';
+  document.getElementById('pmTags').value=p?(p.tags||[]).join('，'):'';
+  document.getElementById('pmSchool').value=p?(p.school||''):'';
+  document.getElementById('pmExp').value=p?(p.exp||''):'';
+  document.getElementById('pmPhone').value=p?(p.priv.phone||''):'';
+  document.getElementById('pmWechat').value=p?(p.priv.wechat||''):'';
+  document.getElementById('pmSalary').value=p?(p.priv.salary||''):'';
+  document.getElementById('pmIntent').value=p?(p.priv.intent||'未知'):'未知';
+  document.getElementById('pmSource').value=p?(p.priv.source||''):'';
+  document.getElementById('pmNote').value=p?(p.priv.note||''):'';
+  document.getElementById('personModal').classList.add('on');
+}
+function savePersonModal(){
+  var name=document.getElementById('pmName').value.trim();
+  if(!name){toast('请填写姓名');return;}
+  var companyId=document.getElementById('pmCompany').value;
+  var reportsTo=document.getElementById('pmReports').value;
+  var vals={
+    name:name,title:document.getElementById('pmTitle').value.trim(),dept:document.getElementById('pmDept').value.trim(),
+    tags:document.getElementById('pmTags').value.split(/[,，、]/).map(function(s){return s.trim();}).filter(Boolean),
+    school:document.getElementById('pmSchool').value.trim(),exp:document.getElementById('pmExp').value.trim()
+  };
+  var priv={phone:document.getElementById('pmPhone').value.trim(),wechat:document.getElementById('pmWechat').value.trim(),
+    salary:document.getElementById('pmSalary').value.trim(),intent:document.getElementById('pmIntent').value,
+    source:document.getElementById('pmSource').value,note:document.getElementById('pmNote').value.trim()};
+  var p=state.personEditId?person(state.personEditId):null;
+  if(!p){
+    p=P(uid(),name,companyId,vals.dept,vals.title,reportsTo||null,{tags:vals.tags,school:vals.school,exp:vals.exp,priv:priv});
+    p.updates.push(U(uid(),today(),'manual','name','','新建人选档案','','','我'));
+    DB.people.push(p);
+    toast('已新增人选 '+name+'，可在架构图中调整位置');
+  }else{
+    logManual(p,'name',p.name,vals.name);
+    logManual(p,'title',p.title,vals.title);
+    logManual(p,'dept',p.dept,vals.dept);
+    logManual(p,'tags',(p.tags||[]).join('、'),vals.tags.join('、'));
+    logManual(p,'school',p.school,vals.school);
+    logManual(p,'exp',p.exp,vals.exp);
+    if(p.company!==companyId){logManual(p,'company',coName(p.company),coName(companyId));p.company=companyId;p.reportsTo=null;}
+    if((p.reportsTo||'')!==(reportsTo||'')){logManual(p,'reportsTo',nodeName(p.reportsTo),nodeName(reportsTo));p.reportsTo=reportsTo||null;}
+    ['title','dept'].forEach(function(f){if(p[f]!==vals[f]&&p.locked.indexOf(f)<0)p.locked.push(f);});
+    p.name=vals.name;p.title=vals.title;p.dept=vals.dept;p.tags=vals.tags;p.school=vals.school;p.exp=vals.exp;
+    for(var k in priv){logManual(p,k,p.priv[k],priv[k]);p.priv[k]=priv[k];}
+    toast('已保存，变更字段已记入更新记录并锁定');
+  }
+  document.getElementById('personModal').classList.remove('on');
+  save();renderAll();
+  if(state.drawerId===p.id)renderDrawer();
+}
+function deleteNode(id){
+  var p=person(id);if(!p)return;
+  var kids=DB.people.filter(function(x){return x.reportsTo===id;});
+  var msg='确定删除「'+p.name+'」？';
+  if(kids.length)msg+='其 '+kids.length+' 个下属节点将自动挂到上级节点下。';
+  if(!p.vacancy&&(p.contacts.length||p.priv.phone||p.priv.note))msg+='该人选的建联记录与私有信息将一并删除。';
+  if(!confirm(msg))return;
+  kids.forEach(function(k){k.reportsTo=p.reportsTo;});
+  DB.people=DB.people.filter(function(x){return x.id!==id;});
+  if(state.drawerId===id)closeDrawer();
+  save();renderAll();
+  toast('已删除「'+p.name+'」');
+}
+/* SECTION: node edit */
+function openNodeModal(id,draft){
+  state.nodeEditId=id;state.nodeDraft=draft||null;
+  var p=id?person(id):null;
+  var companyId=p?p.company:(draft&&draft.company)||state.company;
+  document.getElementById('nmHeading').textContent=p?'编辑架构节点':'新增架构节点';
+  document.getElementById('nmName').value=p?p.name:'';
+  document.getElementById('nmType').value=p?(p.vacancy?'tbd':'person'):'tbd';
+  document.getElementById('nmTitle').value=p?p.title:'';
+  document.getElementById('nmDept').value=p?(p.dept||''):'';
+  document.getElementById('nmNote').value=p?(p.note||''):'';
+  reportsOptions(document.getElementById('nmReports'),companyId,id,p?p.reportsTo:((draft&&draft.reportsTo)||''));
+  document.getElementById('nmDelete').style.display=p?'':'none';
+  document.getElementById('nodeModal').dataset.company=companyId;
+  document.getElementById('nodeModal').classList.add('on');
+}
+function saveNodeModal(){
+  var name=document.getElementById('nmName').value.trim();
+  if(!name){toast('请填写节点名称');return;}
+  var type=document.getElementById('nmType').value;
+  var title=document.getElementById('nmTitle').value.trim();
+  var dept=document.getElementById('nmDept').value.trim();
+  var note=document.getElementById('nmNote').value.trim();
+  var reportsTo=document.getElementById('nmReports').value||null;
+  var companyId=document.getElementById('nodeModal').dataset.company;
+  var p=state.nodeEditId?person(state.nodeEditId):null;
+  if(!p){
+    if(type==='tbd'){p=T(uid(),name,companyId,dept,title||'待补全',reportsTo,note);}
+    else{p=P(uid(),name,companyId,dept,title,reportsTo,{});p.updates.push(U(uid(),today(),'manual','name','','新建人选档案','','','我'));}
+    DB.people.push(p);
+    toast('已新增节点「'+name+'」');
+  }else{
+    var wasTbd=!!p.vacancy;
+    if(p.name!==name){if(!wasTbd)logManual(p,'name',p.name,name);p.name=name;}
+    if(p.title!==title){if(!wasTbd)logManual(p,'title',p.title,title);p.title=title;}
+    if((p.dept||'')!==dept){if(!wasTbd)logManual(p,'dept',p.dept,dept);p.dept=dept;}
+    if((p.reportsTo||'')!==(reportsTo||'')){
+      if(!wasTbd)logManual(p,'reportsTo',nodeName(p.reportsTo),nodeName(reportsTo));
+      p.reportsTo=reportsTo;
+    }
+    if(wasTbd&&type==='person'){
+      delete p.vacancy;
+      p.tags=[];p.school='';p.exp='';p.status='未建联';
+      p.priv={phone:'',wechat:'',salary:'',intent:'未知',note:note,source:''};
+      p.locked=[];p.cv=null;p.cvFile=null;p.unverified=false;p.updates=[];p.contacts=[];p.followUp=null;
+      p.updates.push(U(uid(),today(),'manual','name','','由待补全岗位转为人选档案','','','我'));
+      toast('已转为人选档案，可点开后补充资料');
+    }else if(!wasTbd&&type==='tbd'){
+      if(!confirm('将该人选转为「待补全岗位」？其建联记录与私有信息将被清除。'))return;
+      var noteKeep=p.note||note;
+      p.vacancy=true;p.note=noteKeep;
+      delete p.priv;delete p.contacts;delete p.updates;delete p.cv;delete p.cvFile;delete p.followUp;delete p.status;delete p.tags;delete p.locked;delete p.unverified;
+      if(state.drawerId===p.id)closeDrawer();
+    }else if(wasTbd){p.note=note;}
+    toast('节点已保存');
+  }
+  document.getElementById('nodeModal').classList.remove('on');
+  save();renderAll();
+}
+/* SECTION: company edit */
+function saveCompany(){
+  var name=document.getElementById('cmName').value.trim();
+  if(!name){toast('请填写公司名称');return;}
+  var en=document.getElementById('cmEn').value.trim();
+  var id='c'+Date.now();
+  DB.companies.push({id:id,name:name,en:en});
+  state.company=id;
+  document.getElementById('companyModal').classList.remove('on');
+  save();renderAll();
+  toast('已新增公司「'+name+'」，点击「＋顶层节点」开始绘制架构');
+}
+/* SECTION: CV upload */
+async function handleCvFile(file){
+  var p=person(state.drawerId);if(!p||!file)return;
+  if(file.type!=='application/pdf'&&!/\.pdf$/i.test(file.name)){toast('仅支持 PDF 文件');return;}
+  if(file.size>2.5*1024*1024){toast('文件超过2.5MB，请压缩后再上传');return;}
+  var safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+  var storagePath=p.id+'/'+Date.now()+'-'+safeName;
+  var uploaded=await supabaseClient.storage.from('mapping-cv').upload(storagePath,file,{upsert:true,contentType:'application/pdf'});
+  if(uploaded.error){console.error(uploaded.error);toast('CV 上传失败，请确认 mapping-cv 私有存储已创建');return;}
+  p.cvFile={name:file.name,storagePath:storagePath};
+  save();renderDrawer();toast('PDF 已上传并同步到团队');
+}
+/* SECTION: contact actions */
+function openContact(){
+  var p=person(state.drawerId);if(!p)return;
+  document.getElementById('cDate').value=today();
+  document.getElementById('cChannel').value='电话';
+  document.getElementById('cResult').value='已建联';
+  document.getElementById('cNote').value='';
+  document.getElementById('cFollow').checked=false;
+  document.getElementById('contactModal').classList.add('on');
+}
+function saveContact(){
+  var p=person(state.drawerId);if(!p)return;
+  var date=document.getElementById('cDate').value||today();
+  var channel=document.getElementById('cChannel').value;
+  var result=document.getElementById('cResult').value;
+  var note=document.getElementById('cNote').value.trim();
+  var follow=document.getElementById('cFollow').checked;
+  p.contacts.push({date:date,by:'我',channel:channel,result:result,note:note});
+  var map={'已建联':'已建联','沟通中':'沟通中','有意向':'沟通中','暂无意向':'暂无意向','推荐面试':'推荐/面试中','已入职':'已入职','勿扰':'勿扰'};
+  if(map[result]&&p.status!==map[result]){
+    p.updates.push(U(uid(),today(),'manual','status',p.status,map[result],'','','我'));
+    p.status=map[result];
+  }
+  if(follow){p.followUp=addDays(date,90);}
+  document.getElementById('contactModal').classList.remove('on');
+  save();renderAll();renderDrawer();
+  toast(follow?('已记录，并加入跟进待办（'+p.followUp+' 到期提醒）'):'建联记录已保存');
+}
+function setFollowDays(days){
+  var p=person(state.drawerId);if(!p)return;
+  p.followUp=addDays(today(),days);
+  save();renderAll();renderDrawer();
+  toast('已安排 '+days+' 天后再次建联：'+p.followUp);
+}
+function setFollow3m(){setFollowDays(90);}
+function setDnd(){
+  var p=person(state.drawerId);if(!p)return;
+  if(p.status!=='勿扰'){
+    p.updates.push(U(uid(),today(),'manual','status',p.status,'勿扰','','','我'));
+    p.status='勿扰';p.followUp=null;
+    save();renderAll();renderDrawer();
+  }
+  toast('已标记勿扰，并清除跟进计划');
+}
+/* SECTION: global render & events */
+function renderAll(){
+  renderStats();renderNav();
+  if(state.view==='org')renderOrg();
+  if(state.view==='list')renderList();
+  if(state.view==='updates')renderUpdates();
+  if(state.view==='todo')renderTodo();
+}
+function bind(){
+  document.querySelectorAll('#navTabs button').forEach(function(b){
+    b.addEventListener('click',function(){state.view=b.dataset.view;renderAll();});
+  });
+  document.getElementById('searchInput').addEventListener('input',function(e){
+    state.query=e.target.value.trim();
+    if(state.view==='org'){
+      renderOrg();
+      var n=DB.people.filter(function(p){return !p.vacancy&&p.company===state.company&&matchQ(p,state.query);}).length;
+      document.getElementById('searchCount').textContent=state.query?('当前公司命中 '+n+' 人'):'';
+    }else if(state.view==='list'){renderList();}
+    else{state.view='list';renderAll();}
+  });
+  document.getElementById('fCompany').addEventListener('change',function(e){state.fCompany=e.target.value;renderList();});
+  document.getElementById('fStatus').addEventListener('change',function(e){state.fStatus=e.target.value;renderList();});
+  document.getElementById('fRecent').addEventListener('change',function(e){state.fRecent=e.target.checked;renderList();});
+  document.querySelectorAll('#updFilter .chip').forEach(function(c){
+    c.addEventListener('click',function(){state.updFilter=c.dataset.f;renderUpdates();});
+  });
+  document.getElementById('simBtn').addEventListener('click',simCheck);
+  document.getElementById('resetBtn').addEventListener('click',async function(){
+    if(currentMappingRole!=='owner'){toast('只有 owner 可以重置数据');return;}
+    if(!confirm('确定重置共享 Mapping 数据？所有成员的编辑、建联记录和CV附件都会被清空并恢复初始示例数据。'))return;
+    var removed=await supabaseClient.schema('mapping').from('records').delete().neq('record_id','');
+    if(removed.error){toast('重置失败，请检查 owner 权限');return;}
+    DB=seed();var seeded=await supabaseClient.schema('mapping').from('records').upsert(encodeRows(DB),{onConflict:'record_id'});
+    if(seeded.error){toast('初始数据写入失败，请联系管理员');return;}
+    var rows=await fetchRemoteRows();applyRemoteRows(rows);renderAll();toast('共享数据已恢复为初始状态');
+  });
+  document.getElementById('editModeBtn').addEventListener('click',function(){
+    state.editMode=!state.editMode;renderOrg();
+    toast(state.editMode?'编辑模式已开启：点节点可编辑/删除，点「＋下属」添加下级':'已退出编辑模式');
+  });
+  document.getElementById('addTopBtn').addEventListener('click',function(){openNodeModal(null,{company:state.company,reportsTo:''});});
+  document.getElementById('addCoBtn').addEventListener('click',function(){
+    document.getElementById('cmName').value='';document.getElementById('cmEn').value='';
+    document.getElementById('companyModal').classList.add('on');
+  });
+  document.getElementById('cmCancel').addEventListener('click',function(){document.getElementById('companyModal').classList.remove('on');});
+  document.getElementById('cmSave').addEventListener('click',saveCompany);
+  document.getElementById('addPersonBtn').addEventListener('click',function(){openPersonModal(null);});
+  document.getElementById('dwClose').addEventListener('click',closeDrawer);
+  document.getElementById('overlay').addEventListener('click',closeDrawer);
+  document.querySelectorAll('#dwTabs button').forEach(function(b){
+    b.addEventListener('click',function(){state.tab=b.dataset.tab;renderDrawer();});
+  });
+  document.getElementById('dwStatusSel').addEventListener('change',function(e){
+    var p=person(state.drawerId);if(!p)return;
+    if(p.status!==e.target.value){
+      p.updates.push(U(uid(),today(),'manual','status',p.status,e.target.value,'','','我'));
+      p.status=e.target.value;save();renderAll();renderDrawer();
+      toast('建联状态已更新为「'+p.status+'」');
+    }
+  });
+  document.getElementById('editBtn').addEventListener('click',function(){openPersonModal(state.drawerId);});
+  document.getElementById('deletePersonBtn').addEventListener('click',function(){deleteNode(state.drawerId);});
+  document.getElementById('pmCancel').addEventListener('click',function(){document.getElementById('personModal').classList.remove('on');});
+  document.getElementById('pmSave').addEventListener('click',savePersonModal);
+  document.getElementById('pmCompany').addEventListener('change',function(e){
+    reportsOptions(document.getElementById('pmReports'),e.target.value,state.personEditId,'');
+  });
+  document.getElementById('nmCancel').addEventListener('click',function(){document.getElementById('nodeModal').classList.remove('on');});
+  document.getElementById('nmSave').addEventListener('click',saveNodeModal);
+  document.getElementById('nmDelete').addEventListener('click',function(){
+    var id=state.nodeEditId;
+    document.getElementById('nodeModal').classList.remove('on');
+    deleteNode(id);
+  });
+  document.getElementById('cvUploadBtn').addEventListener('click',function(){document.getElementById('cvFileInput').click();});
+  document.getElementById('cvFileInput').addEventListener('change',function(e){
+    if(e.target.files&&e.target.files[0])handleCvFile(e.target.files[0]);
+    e.target.value='';
+  });
+  document.getElementById('addContactBtn').addEventListener('click',openContact);
+  document.getElementById('contactCancel').addEventListener('click',function(){document.getElementById('contactModal').classList.remove('on');});
+  document.getElementById('contactSave').addEventListener('click',saveContact);
+  document.getElementById('cResult').addEventListener('change',function(e){
+    document.getElementById('cFollow').checked=(e.target.value==='暂无意向');
+  });
+  document.querySelectorAll('[data-follow-days]').forEach(function(btn){btn.addEventListener('click',function(){setFollowDays(Number(btn.dataset.followDays));});});
+  document.getElementById('customFollowDate').addEventListener('change',function(e){if(!e.target.value)return;var p=person(state.drawerId);if(!p)return;p.followUp=e.target.value;save();renderAll();renderDrawer();toast('已安排再次建联：'+p.followUp);e.target.value='';});
+  document.getElementById('dndBtn').addEventListener('click',setDnd);
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){
+      var modals=['personModal','nodeModal','companyModal','contactModal'];
+      for(var i=0;i<modals.length;i++){
+        var m=document.getElementById(modals[i]);
+        if(m.classList.contains('on')){m.classList.remove('on');return;}
+      }
+      closeDrawer();
+    }
+  });
+}
+document.getElementById('authForm').addEventListener('submit',async function(e){
+  e.preventDefault();var email=document.getElementById('authEmail').value.trim();var message=document.getElementById('authMessage');var button=document.getElementById('authSubmit');
+  button.disabled=true;message.textContent='正在发送登录链接…';
+  var result=await supabaseClient.auth.signInWithOtp({email:email,options:{shouldCreateUser:false,emailRedirectTo:window.location.href}});
+  button.disabled=false;
+  if(result.error){message.textContent='发送失败：'+result.error.message;return;}
+  message.textContent='登录链接已发送，请打开邮件并在此网页完成登录。';
+});
+supabaseClient.auth.onAuthStateChange(function(event,session){if(session&&event==='SIGNED_IN'){initializeMapping().catch(function(e){console.error(e);showAuthGate('加载失败：请确认数据库权限和 mapping API 设置。');});}});
+initializeMapping().catch(function(e){console.error(e);showAuthGate('连接数据库失败：请检查 Supabase schema、API 设置和成员权限。');});
+</script>
+</body>
+</html>

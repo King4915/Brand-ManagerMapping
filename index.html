@@ -115,6 +115,9 @@ main{padding:16px 0 60px}
 .pcard .tt{font-size:13px;color:var(--sub);margin-top:4px}
 .pcard .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .tag{font-size:11px;background:var(--brand-soft);color:var(--brand);padding:2px 8px;border-radius:6px}
+.pcard .tag.priority-tag{background:#fff2da;color:#9a6410;font-weight:700}
+.pcard .tag.target-tag{background:#eaf2ff;color:#315d9a}
+.pcard .tag.verify-tag{background:#fff1f0;color:#b5473c}
 .pcard .r2{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
 .mini{font-size:11px;color:var(--sub)}
 .mini.fu{color:var(--amber);font-weight:600}
@@ -395,13 +398,13 @@ main{padding-top:22px}
     <div class="panel">
       <div class="panel-hd">
         <h2 id="orgTitle">组织架构</h2>
-        <span class="hint">点人名看卡片 · 虚线框为待补全岗位 · 角标：橙=待跟进 红=冲突 灰=待核实</span>
+        <span class="hint">点人名看卡片 · 虚线框区分负责人未知、确认空缺与组织信息待核实 · 角标：橙=待跟进 红=冲突 灰=待核实</span>
         <button class="btn ghost small" id="editModeBtn">编辑架构</button>
         <button class="btn ghost small" id="addTopBtn">＋ 顶层节点</button>
         <button class="btn ghost small" id="addCoBtn">＋ 公司</button>
       </div>
       <div class="tree-scroll"><div class="tree" id="orgTree"></div></div>
-      <p class="org-note">汇报线为基于公开报道的示意推断，非官方架构；「待补全」为公开信息不足的岗位，可通过招聘渠道或人脉补充后在「编辑架构」中完善。</p>
+      <p class="org-note">汇报线为基于公开报道的示意推断，非官方架构；岗位状态可区分“负责人未知”“已确认空缺”和“组织信息待核实”，请在节点中补充来源与最近核实日期。</p>
     </div>
   </section>
 
@@ -410,6 +413,8 @@ main{padding-top:22px}
     <div class="filters">
       <select id="fCompany"><option value="">全部公司</option></select>
       <select id="fStatus"><option value="">全部建联状态</option></select>
+      <select id="fPriority"><option value="">全部优先级</option><option value="A">优先级 A</option><option value="B">优先级 B</option><option value="C">优先级 C</option><option value="unrated">未评级</option></select>
+      <select id="fVerify"><option value="">全部核实状态</option><option value="pending">待核实</option><option value="verified">已核实</option></select>
       <label><input type="checkbox" id="fRecent"> 近30天有动态</label>
       <button class="btn primary small" id="addPersonBtn" style="margin-left:auto">＋ 新增人选</button>
     </div>
@@ -482,7 +487,7 @@ main{padding-top:22px}
     <div class="dw-sec" id="sec-cv">
       <div class="cv-upload">
         <button class="btn primary small" id="cvUploadBtn">上传 PDF 简历</button>
-        <span class="hint">≤2.5MB，保存在本浏览器；点击即可在线预览</span>
+        <span class="hint">PDF ≤2.5MB，保存至 Supabase 团队私有空间，授权成员可预览</span>
         <input type="file" id="cvFileInput" accept="application/pdf" style="display:none">
       </div>
       <div id="cvFileBox"></div>
@@ -525,6 +530,12 @@ main{padding-top:22px}
     <div class="f-row"><label>技能标签（用逗号分隔）</label><input id="pmTags"></div>
     <div class="f-row"><label>教育背景</label><input id="pmSchool"></div>
     <div class="f-row"><label>履历摘要 / 信息来源备注</label><textarea id="pmExp"></textarea></div>
+    <div class="f-row"><label>公开来源链接</label><input id="pmSourceUrl" type="url" placeholder="https://..."></div>
+    <div class="f-2col">
+      <div class="f-row"><label>来源发布日期</label><input id="pmSourceDate" type="date"></div>
+      <div class="f-row"><label>最近核实日期</label><input id="pmVerifiedAt" type="date"></div>
+    </div>
+    <div class="f-row"><label>公开信息置信度</label><select id="pmConfidence"><option>未核实</option><option>高</option><option>中</option><option>低</option></select></div>
     <h4>私有信息（仅 HR 可见）</h4>
     <div class="f-2col">
       <div class="f-row"><label>手机号</label><input id="pmPhone" type="tel"></div>
@@ -534,8 +545,19 @@ main{padding-top:22px}
       <div class="f-row"><label>期望薪酬</label><input id="pmSalary"></div>
       <div class="f-row"><label>意向等级</label><select id="pmIntent"><option>未知</option><option>积极看机会</option><option>观望</option><option>暂不考虑</option></select></div>
     </div>
-    <div class="f-row"><label>信息来源</label>
-      <select id="pmSource"><option value="">未标注</option><option>面试记录</option><option>朋友推荐</option><option>电话建联</option><option>内部消息</option><option>招聘网站</option><option>公开报道</option></select>
+    <div class="f-2col">
+      <div class="f-row"><label>目标岗位</label><input id="pmTargetRole" placeholder="如：品牌总监 / CMO"></div>
+      <div class="f-row"><label>优先级</label><select id="pmPriority"><option value="">未评级</option><option>A</option><option>B</option><option>C</option></select></div>
+    </div>
+    <div class="f-2col">
+      <div class="f-row"><label>岗位匹配判断</label><select id="pmFit"><option value="">待评估</option><option>高</option><option>中</option><option>低</option></select></div>
+      <div class="f-row"><label>跟进负责人</label><input id="pmOwner" placeholder="HR 姓名"></div>
+    </div>
+    <div class="f-row"><label>匹配依据</label><textarea id="pmFitReason" placeholder="对应的岗位要求、经历或成果"></textarea></div>
+    <div class="f-row"><label>风险 / 待核实项</label><textarea id="pmRisk" placeholder="如任职状态、地域、薪酬或公开信息待核实"></textarea></div>
+    <div class="f-row"><label>下一步行动</label><input id="pmNextStep" placeholder="如：通过前同事引荐，确认是否考虑机会"></div>
+    <div class="f-row"><label>人脉 / 关系来源</label>
+      <select id="pmSource"><option value="">未标注</option><option>面试记录</option><option>朋友推荐</option><option>电话建联</option><option>内部消息</option><option>招聘网站</option><option>公开报道</option><option>猎头推荐</option><option>员工推荐</option></select>
     </div>
     <div class="f-row"><label>备注</label><textarea id="pmNote"></textarea></div>
     <div class="acts">
@@ -559,6 +581,16 @@ main{padding-top:22px}
       <div class="f-row"><label>汇报对象（调整汇报线）</label><select id="nmReports"></select></div>
     </div>
     <div class="f-row"><label>岗位备注（待补全岗位适用）</label><textarea id="nmNote" placeholder="如：空缺原因、在招渠道、内部竞聘传闻等"></textarea></div>
+    <div id="nmEvidence">
+      <h4>岗位核实信息</h4>
+      <div class="f-row" id="nmRoleStatusRow"><label>岗位状态（待补全节点）</label><select id="nmRoleStatus"><option value="owner_unknown">岗位存在，负责人未知</option><option value="confirmed_vacant">已确认空缺</option><option value="unknown">组织信息不足，待核实</option></select></div>
+      <div class="f-row"><label>组织信息来源链接</label><input id="nmSourceUrl" type="url" placeholder="https://..."></div>
+      <div class="f-2col">
+        <div class="f-row"><label>来源发布日期</label><input id="nmSourceDate" type="date"></div>
+        <div class="f-row"><label>最近核实日期</label><input id="nmVerifiedAt" type="date"></div>
+      </div>
+      <div class="f-row"><label>置信度</label><select id="nmConfidence"><option>未核实</option><option>高</option><option>中</option><option>低</option></select></div>
+    </div>
     <div class="acts">
       <button class="btn danger left" id="nmDelete" style="display:none">删除节点</button>
       <button class="btn ghost" id="nmCancel">取消</button>
@@ -700,15 +732,17 @@ var pendingRemoteReload=false;
 /* SECTION: data */
 'use strict';
 var STATUS=['未建联','已建联','沟通中','暂无意向','推荐/面试中','已入职','勿扰'];
-var FIELD_LABEL={title:'职位',dept:'部门',company:'公司',name:'姓名',tags:'技能标签',school:'教育背景',exp:'履历摘要',reportsTo:'汇报线',phone:'手机号',wechat:'微信',salary:'期望薪酬',intent:'意向等级',note:'备注',source:'信息来源',status:'建联状态',org:'组织架构',vacNote:'岗位备注'};
+var FIELD_LABEL={title:'职位',dept:'部门',company:'公司',name:'姓名',tags:'技能标签',school:'教育背景',exp:'履历摘要',reportsTo:'汇报线',phone:'手机号',wechat:'微信',salary:'期望薪酬',intent:'意向等级',note:'备注',source:'关系来源',sourceUrl:'公开来源链接',sourceDate:'来源发布日期',verifiedAt:'最近核实日期',confidence:'信息置信度',targetRole:'目标岗位',priority:'优先级',fit:'岗位匹配判断',fitReason:'匹配依据',risk:'风险/待核实项',owner:'跟进负责人',nextStep:'下一步行动',status:'建联状态',org:'组织架构',vacNote:'岗位备注',vacancyStatus:'岗位核实状态'};
 function P(id,name,company,dept,title,reportsTo,extra){
   var base={id:id,name:name,company:company,dept:dept,title:title,reportsTo:reportsTo,tags:[],school:'',exp:'',status:'未建联',
-    priv:{phone:'',wechat:'',salary:'',intent:'未知',note:'',source:''},locked:[],cv:null,cvFile:null,unverified:false,updates:[],contacts:[],followUp:null};
+    sourceUrl:'',sourceDate:'',verifiedAt:'',confidence:'未核实',roleStatus:'filled',
+    priv:{phone:'',wechat:'',salary:'',intent:'未知',source:'',targetRole:'',priority:'',fit:'',fitReason:'',risk:'',owner:'',nextStep:'',note:''},locked:[],cv:null,cvFile:null,unverified:false,updates:[],contacts:[],followUp:null};
   if(extra){for(var k in extra){base[k]=extra[k];}}
   return base;
 }
 function T(id,name,company,dept,title,reportsTo,note){
-  return {id:id,vacancy:true,name:name,company:company,dept:dept,title:title,reportsTo:reportsTo,note:note||''};
+  var roleStatus=note&&/负责人未见|负责人未知|待补全/.test(note)?'owner_unknown':'unknown';
+  return {id:id,vacancy:true,name:name,company:company,dept:dept,title:title,reportsTo:reportsTo,note:note||'',roleStatus:roleStatus,sourceUrl:'',sourceDate:'',verifiedAt:'',confidence:'未核实'};
 }
 function U(id,date,type,field,before,after,source,confidence,by,resolved){
   return {id:id,date:date,type:type,field:field,before:before,after:after,source:source||'',confidence:confidence||'',by:by||'AI',resolved:resolved||null};
@@ -837,7 +871,7 @@ function seed(){
 }
 /* SECTION: state */
 var LS_KEY='tm-mapping-real-v2';
-var state={view:'org',company:'pg',query:'',fCompany:'',fStatus:'',fRecent:false,updFilter:'',drawerId:null,tab:'info',editMode:false,nodeEditId:null,nodeDraft:null,personEditId:null};
+var state={view:'org',company:'pg',query:'',fCompany:'',fStatus:'',fPriority:'',fVerify:'',fRecent:false,updFilter:'',drawerId:null,tab:'info',editMode:false,nodeEditId:null,nodeDraft:null,personEditId:null};
 var DB=null;
 function loadLocal(){
   try{var raw=localStorage.getItem(LS_KEY);if(raw){var value=JSON.parse(raw);if(value&&value.people&&value.companies)return value;}}catch(e){}
@@ -928,7 +962,8 @@ function fill(root,map){for(var k in map){var el=root.querySelector('[data-f="'+
 function makePill(status){var s=document.createElement('span');s.className='pill s'+statusIdx(status);s.textContent=status;return s;}
 function matchQ(p,q){
   if(!q)return true;q=q.toLowerCase();
-  var hay=[p.name,p.title,coName(p.company),p.dept,p.school||'',p.exp||'',(p.tags||[]).join(' '),p.priv?p.priv.note:'',p.note||''].join(' ').toLowerCase();
+  var v=p.priv||{};
+  var hay=[p.name,p.title,coName(p.company),p.dept,p.school||'',p.exp||'',(p.tags||[]).join(' '),p.sourceUrl||'',p.sourceDate||'',p.verifiedAt||'',p.note||'',v.note||'',v.targetRole||'',v.priority||'',v.fit||'',v.fitReason||'',v.risk||'',v.owner||'',v.nextStep||'',v.source||''].join(' ').toLowerCase();
   return hay.indexOf(q)>=0;
 }
 function unresolvedConflicts(p){var r=[];(p.updates||[]).forEach(function(u){if(u.type==='conflict'&&!u.resolved)r.push(u);});return r;}
@@ -984,8 +1019,8 @@ function buildNode(p){
   var el=cloneTpl('t-node');
   if(p.vacancy){
     el.classList.add('vacancy');
-    fill(el,{name:p.name,title:p.title,status:'待补全'});
-    el.querySelector('.dot').style.background='#cbd5e1';
+    fill(el,{name:p.name,title:p.title,status:vacancyStatusLabel(p.roleStatus)});
+    el.querySelector('.dot').style.background=p.roleStatus==='confirmed_vacant'?'#d97706':(p.roleStatus==='owner_unknown'?'#2563eb':'#94a3b8');
     el.title=p.note||'';
   }else{
     if(!p.reportsTo)el.classList.add('root');
@@ -1014,6 +1049,7 @@ function buildNode(p){
   }
   return el;
 }
+function vacancyStatusLabel(s){return s==='confirmed_vacant'?'已确认空缺':(s==='owner_unknown'?'负责人未知':'组织信息待核实');}
 function renderOrg(){
   renderCompanyChips();
   var co=null;DB.companies.forEach(function(c){if(c.id===state.company)co=c;});
@@ -1061,7 +1097,7 @@ function renderListFilters(){
   fc.value=state.fCompany;
   var fs=document.getElementById('fStatus');
   if(fs.options.length<=1){STATUS.forEach(function(s){var o=document.createElement('option');o.value=s;o.textContent=s;fs.appendChild(o);});}
-  fs.value=state.fStatus;document.getElementById('fRecent').checked=state.fRecent;
+  fs.value=state.fStatus;document.getElementById('fPriority').value=state.fPriority;document.getElementById('fVerify').value=state.fVerify;document.getElementById('fRecent').checked=state.fRecent;
 }
 function renderList(){
   renderListFilters();
@@ -1071,6 +1107,11 @@ function renderList(){
     if(p.vacancy)return false;
     if(state.fCompany&&p.company!==state.fCompany)return false;
     if(state.fStatus&&p.status!==state.fStatus)return false;
+    if(state.fPriority==='unrated'&&(p.priv||{}).priority)return false;
+    if(state.fPriority&&state.fPriority!=='unrated'&&(p.priv||{}).priority!==state.fPriority)return false;
+    var verified=!!p.verifiedAt&&p.confidence!=='未核实'&&!p.unverified;
+    if(state.fVerify==='pending'&&verified)return false;
+    if(state.fVerify==='verified'&&!verified)return false;
     if(state.fRecent&&latestUpd(p)<cut)return false;
     return matchQ(p,state.query);
   });
@@ -1081,6 +1122,9 @@ function renderList(){
     if(p.unverified){el.querySelector('.r1').appendChild(cloneTpl('t-uvtag'));}
     var tags=el.querySelector('.tags');
     (p.tags||[]).slice(0,3).forEach(function(t){var s=cloneTpl('t-tag');s.textContent=t;tags.appendChild(s);});
+    if(p.priv&&p.priv.targetRole){var tr=cloneTpl('t-tag');tr.textContent='目标：'+p.priv.targetRole;tr.classList.add('target-tag');tags.appendChild(tr);}
+    if(p.priv&&p.priv.priority){var pr=cloneTpl('t-tag');pr.textContent='优先级 '+p.priv.priority;pr.classList.add('priority-tag');tags.appendChild(pr);}
+    if(!p.verifiedAt||p.confidence==='未核实'||p.unverified){var vr=cloneTpl('t-tag');vr.textContent='信息待核实';vr.classList.add('verify-tag');tags.appendChild(vr);}
     var lu=latestUpd(p);
     el.querySelector('[data-f="upd"]').textContent=lu?('最近动态 '+lu):'近30天无动态';
     var fu=el.querySelector('[data-f="follow"]');
@@ -1220,13 +1264,29 @@ function renderInfoTab(p){
   pub.appendChild(kvRow('技能标签',(p.tags||[]).join('、'),false));
   pub.appendChild(kvRow('教育背景',p.school,false));
   pub.appendChild(kvRow('履历摘要',p.exp,false));
+  var src=kvRow('公开来源链接','',false),srcValue=src.querySelector('[data-f="v"]');
+  if(/^https?:\/\//i.test(p.sourceUrl||'')){
+    var link=document.createElement('a');link.href=p.sourceUrl;link.target='_blank';link.rel='noopener noreferrer';link.textContent='打开来源页面';srcValue.appendChild(link);
+  }else{srcValue.textContent='未填写';}
+  pub.appendChild(src);
+  pub.appendChild(kvRow('来源发布日期',p.sourceDate,false));
+  pub.appendChild(kvRow('最近核实日期',p.verifiedAt,false));
+  pub.appendChild(kvRow('公开信息置信度',p.confidence||'未核实',false));
   var priv=document.getElementById('privFields');priv.innerHTML='';
-  priv.appendChild(kvRow('手机号',p.priv.phone,false));
-  priv.appendChild(kvRow('微信',p.priv.wechat,false));
-  priv.appendChild(kvRow('期望薪酬',p.priv.salary,false));
-  priv.appendChild(kvRow('意向等级',p.priv.intent,false));
-  priv.appendChild(kvRow('信息来源',p.priv.source,false));
-  priv.appendChild(kvRow('备注',p.priv.note,false));
+  var v=p.priv||{};
+  priv.appendChild(kvRow('目标岗位',v.targetRole,false));
+  priv.appendChild(kvRow('候选人优先级',v.priority||'未评级',false));
+  priv.appendChild(kvRow('岗位匹配判断',v.fit||'待评估',false));
+  priv.appendChild(kvRow('匹配依据',v.fitReason,false));
+  priv.appendChild(kvRow('风险 / 待核实项',v.risk,false));
+  priv.appendChild(kvRow('跟进负责人',v.owner,false));
+  priv.appendChild(kvRow('下一步行动',v.nextStep,false));
+  priv.appendChild(kvRow('手机号',v.phone,false));
+  priv.appendChild(kvRow('微信',v.wechat,false));
+  priv.appendChild(kvRow('期望薪酬',v.salary,false));
+  priv.appendChild(kvRow('意向等级',v.intent,false));
+  priv.appendChild(kvRow('关系 / 信息来源',v.source,false));
+  priv.appendChild(kvRow('备注',v.note,false));
 }
 function renderCvTab(p){
   var fbox=document.getElementById('cvFileBox');fbox.innerHTML='';
@@ -1290,10 +1350,21 @@ function openPersonModal(id){
   document.getElementById('pmTags').value=p?(p.tags||[]).join('，'):'';
   document.getElementById('pmSchool').value=p?(p.school||''):'';
   document.getElementById('pmExp').value=p?(p.exp||''):'';
+  document.getElementById('pmSourceUrl').value=p?(p.sourceUrl||''):'';
+  document.getElementById('pmSourceDate').value=p?(p.sourceDate||''):'';
+  document.getElementById('pmVerifiedAt').value=p?(p.verifiedAt||''):'';
+  document.getElementById('pmConfidence').value=p?(p.confidence||'未核实'):'未核实';
   document.getElementById('pmPhone').value=p?(p.priv.phone||''):'';
   document.getElementById('pmWechat').value=p?(p.priv.wechat||''):'';
   document.getElementById('pmSalary').value=p?(p.priv.salary||''):'';
   document.getElementById('pmIntent').value=p?(p.priv.intent||'未知'):'未知';
+  document.getElementById('pmTargetRole').value=p?(p.priv.targetRole||''):'';
+  document.getElementById('pmPriority').value=p?(p.priv.priority||''):'';
+  document.getElementById('pmFit').value=p?(p.priv.fit||''):'';
+  document.getElementById('pmOwner').value=p?(p.priv.owner||''):'';
+  document.getElementById('pmFitReason').value=p?(p.priv.fitReason||''):'';
+  document.getElementById('pmRisk').value=p?(p.priv.risk||''):'';
+  document.getElementById('pmNextStep').value=p?(p.priv.nextStep||''):'';
   document.getElementById('pmSource').value=p?(p.priv.source||''):'';
   document.getElementById('pmNote').value=p?(p.priv.note||''):'';
   document.getElementById('personModal').classList.add('on');
@@ -1308,12 +1379,17 @@ function savePersonModal(){
     tags:document.getElementById('pmTags').value.split(/[,，、]/).map(function(s){return s.trim();}).filter(Boolean),
     school:document.getElementById('pmSchool').value.trim(),exp:document.getElementById('pmExp').value.trim()
   };
+  var pubMeta={sourceUrl:document.getElementById('pmSourceUrl').value.trim(),sourceDate:document.getElementById('pmSourceDate').value,
+    verifiedAt:document.getElementById('pmVerifiedAt').value,confidence:document.getElementById('pmConfidence').value};
   var priv={phone:document.getElementById('pmPhone').value.trim(),wechat:document.getElementById('pmWechat').value.trim(),
     salary:document.getElementById('pmSalary').value.trim(),intent:document.getElementById('pmIntent').value,
-    source:document.getElementById('pmSource').value,note:document.getElementById('pmNote').value.trim()};
+    targetRole:document.getElementById('pmTargetRole').value.trim(),priority:document.getElementById('pmPriority').value,
+    fit:document.getElementById('pmFit').value,owner:document.getElementById('pmOwner').value.trim(),
+    fitReason:document.getElementById('pmFitReason').value.trim(),risk:document.getElementById('pmRisk').value.trim(),
+    nextStep:document.getElementById('pmNextStep').value.trim(),source:document.getElementById('pmSource').value,note:document.getElementById('pmNote').value.trim()};
   var p=state.personEditId?person(state.personEditId):null;
   if(!p){
-    p=P(uid(),name,companyId,vals.dept,vals.title,reportsTo||null,{tags:vals.tags,school:vals.school,exp:vals.exp,priv:priv});
+    p=P(uid(),name,companyId,vals.dept,vals.title,reportsTo||null,{tags:vals.tags,school:vals.school,exp:vals.exp,priv:priv,sourceUrl:pubMeta.sourceUrl,sourceDate:pubMeta.sourceDate,verifiedAt:pubMeta.verifiedAt,confidence:pubMeta.confidence});
     p.updates.push(U(uid(),today(),'manual','name','','新建人选档案','','','我'));
     DB.people.push(p);
     toast('已新增人选 '+name+'，可在架构图中调整位置');
@@ -1324,10 +1400,12 @@ function savePersonModal(){
     logManual(p,'tags',(p.tags||[]).join('、'),vals.tags.join('、'));
     logManual(p,'school',p.school,vals.school);
     logManual(p,'exp',p.exp,vals.exp);
+    ['sourceUrl','sourceDate','verifiedAt','confidence'].forEach(function(k){logManual(p,k,p[k],pubMeta[k]);p[k]=pubMeta[k];});
     if(p.company!==companyId){logManual(p,'company',coName(p.company),coName(companyId));p.company=companyId;p.reportsTo=null;}
     if((p.reportsTo||'')!==(reportsTo||'')){logManual(p,'reportsTo',nodeName(p.reportsTo),nodeName(reportsTo));p.reportsTo=reportsTo||null;}
     ['title','dept'].forEach(function(f){if(p[f]!==vals[f]&&p.locked.indexOf(f)<0)p.locked.push(f);});
     p.name=vals.name;p.title=vals.title;p.dept=vals.dept;p.tags=vals.tags;p.school=vals.school;p.exp=vals.exp;
+    p.priv=p.priv||{};
     for(var k in priv){logManual(p,k,p.priv[k],priv[k]);p.priv[k]=priv[k];}
     toast('已保存，变更字段已记入更新记录并锁定');
   }
@@ -1359,6 +1437,12 @@ function openNodeModal(id,draft){
   document.getElementById('nmTitle').value=p?p.title:'';
   document.getElementById('nmDept').value=p?(p.dept||''):'';
   document.getElementById('nmNote').value=p?(p.note||''):'';
+  document.getElementById('nmRoleStatus').value=p?(p.roleStatus||'unknown'):'owner_unknown';
+  document.getElementById('nmRoleStatusRow').style.display=(p?p.vacancy:true)?'':'none';
+  document.getElementById('nmSourceUrl').value=p?(p.sourceUrl||''):'';
+  document.getElementById('nmSourceDate').value=p?(p.sourceDate||''):'';
+  document.getElementById('nmVerifiedAt').value=p?(p.verifiedAt||''):'';
+  document.getElementById('nmConfidence').value=p?(p.confidence||'未核实'):'未核实';
   reportsOptions(document.getElementById('nmReports'),companyId,id,p?p.reportsTo:((draft&&draft.reportsTo)||''));
   document.getElementById('nmDelete').style.display=p?'':'none';
   document.getElementById('nodeModal').dataset.company=companyId;
@@ -1371,12 +1455,18 @@ function saveNodeModal(){
   var title=document.getElementById('nmTitle').value.trim();
   var dept=document.getElementById('nmDept').value.trim();
   var note=document.getElementById('nmNote').value.trim();
+  var roleStatus=document.getElementById('nmRoleStatus').value;
+  var sourceUrl=document.getElementById('nmSourceUrl').value.trim();
+  var sourceDate=document.getElementById('nmSourceDate').value;
+  var verifiedAt=document.getElementById('nmVerifiedAt').value;
+  var confidence=document.getElementById('nmConfidence').value;
   var reportsTo=document.getElementById('nmReports').value||null;
   var companyId=document.getElementById('nodeModal').dataset.company;
   var p=state.nodeEditId?person(state.nodeEditId):null;
   if(!p){
     if(type==='tbd'){p=T(uid(),name,companyId,dept,title||'待补全',reportsTo,note);}
     else{p=P(uid(),name,companyId,dept,title,reportsTo,{});p.updates.push(U(uid(),today(),'manual','name','','新建人选档案','','','我'));}
+    p.roleStatus=type==='tbd'?roleStatus:'filled';p.sourceUrl=sourceUrl;p.sourceDate=sourceDate;p.verifiedAt=verifiedAt;p.confidence=confidence;
     DB.people.push(p);
     toast('已新增节点「'+name+'」');
   }else{
@@ -1388,10 +1478,14 @@ function saveNodeModal(){
       if(!wasTbd)logManual(p,'reportsTo',nodeName(p.reportsTo),nodeName(reportsTo));
       p.reportsTo=reportsTo;
     }
+    [['sourceUrl',sourceUrl],['sourceDate',sourceDate],['verifiedAt',verifiedAt],['confidence',confidence]].forEach(function(pair){
+      if(!wasTbd)logManual(p,pair[0],p[pair[0]],pair[1]);p[pair[0]]=pair[1];
+    });
+    p.roleStatus=type==='tbd'?roleStatus:'filled';
     if(wasTbd&&type==='person'){
       delete p.vacancy;
       p.tags=[];p.school='';p.exp='';p.status='未建联';
-      p.priv={phone:'',wechat:'',salary:'',intent:'未知',note:note,source:''};
+      p.priv={phone:'',wechat:'',salary:'',intent:'未知',note:note,source:'',targetRole:'',priority:'',fit:'',fitReason:'',risk:'',owner:'',nextStep:''};
       p.locked=[];p.cv=null;p.cvFile=null;p.unverified=false;p.updates=[];p.contacts=[];p.followUp=null;
       p.updates.push(U(uid(),today(),'manual','name','','由待补全岗位转为人选档案','','','我'));
       toast('已转为人选档案，可点开后补充资料');
@@ -1498,6 +1592,8 @@ function bind(){
   });
   document.getElementById('fCompany').addEventListener('change',function(e){state.fCompany=e.target.value;renderList();});
   document.getElementById('fStatus').addEventListener('change',function(e){state.fStatus=e.target.value;renderList();});
+  document.getElementById('fPriority').addEventListener('change',function(e){state.fPriority=e.target.value;renderList();});
+  document.getElementById('fVerify').addEventListener('change',function(e){state.fVerify=e.target.value;renderList();});
   document.getElementById('fRecent').addEventListener('change',function(e){state.fRecent=e.target.checked;renderList();});
   document.querySelectorAll('#updFilter .chip').forEach(function(c){
     c.addEventListener('click',function(){state.updFilter=c.dataset.f;renderUpdates();});
@@ -1546,6 +1642,7 @@ function bind(){
   });
   document.getElementById('nmCancel').addEventListener('click',function(){document.getElementById('nodeModal').classList.remove('on');});
   document.getElementById('nmSave').addEventListener('click',saveNodeModal);
+  document.getElementById('nmType').addEventListener('change',function(e){document.getElementById('nmRoleStatusRow').style.display=e.target.value==='tbd'?'':'none';});
   document.getElementById('nmDelete').addEventListener('click',function(){
     var id=state.nodeEditId;
     document.getElementById('nodeModal').classList.remove('on');

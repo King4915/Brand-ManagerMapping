@@ -729,6 +729,10 @@ var currentMappingRole=null;
 var remoteSaveTimer=null;
 var remoteSaving=false;
 var pendingRemoteReload=false;
+var mappingInitPromise=null;
+var mappingUiBound=false;
+var mappingChannel=null;
+var mappingReady=false;
 /* SECTION: data */
 'use strict';
 var STATUS=['未建联','已建联','沟通中','暂无意向','推荐/面试中','已入职','勿扰'];
@@ -896,7 +900,12 @@ async function fetchRemoteRows(){
   if(result.error)throw result.error;
   return result.data||[];
 }
-async function initializeMapping(){
+function initializeMapping(){
+  if(mappingInitPromise)return mappingInitPromise;
+  mappingInitPromise=initializeMappingOnce().finally(function(){mappingInitPromise=null;});
+  return mappingInitPromise;
+}
+async function initializeMappingOnce(){
   var userResult=await supabaseClient.auth.getUser();
   if(userResult.error||!userResult.data.user){showAuthGate();return;}
   var membership=await supabaseClient.schema('mapping').from('members').select('role,is_active').eq('user_id',userResult.data.user.id).maybeSingle();
@@ -909,11 +918,14 @@ async function initializeMapping(){
   applyRemoteRows(rows);
   document.getElementById('authGate').style.display='none';
   bind();renderAll();
-  supabaseClient.channel('mapping-records-live')
-    .on('postgres_changes',{event:'*',schema:'mapping',table:'records'},function(){
-      if(remoteSaving){pendingRemoteReload=true;return;}
-      refreshFromRemote();
-    }).subscribe();
+  mappingReady=true;
+  if(!mappingChannel){
+    mappingChannel=supabaseClient.channel('mapping-records-live')
+      .on('postgres_changes',{event:'*',schema:'mapping',table:'records'},function(){
+        if(remoteSaving){pendingRemoteReload=true;return;}
+        refreshFromRemote();
+      }).subscribe();
+  }
 }
 async function refreshFromRemote(){
   try{var rows=await fetchRemoteRows();applyRemoteRows(rows);renderAll();if(state.drawerId)renderDrawer();toast('已同步其他成员的更新');}
@@ -1578,6 +1590,8 @@ function renderAll(){
   if(state.view==='todo')renderTodo();
 }
 function bind(){
+  if(mappingUiBound)return;
+  mappingUiBound=true;
   document.querySelectorAll('#navTabs button').forEach(function(b){
     b.addEventListener('click',function(){state.view=b.dataset.view;renderAll();});
   });
@@ -1678,13 +1692,26 @@ document.getElementById('authForm').addEventListener('submit',async function(e){
   button.disabled=true;message.textContent='正在登录…';
   try{
     var result=await supabaseClient.auth.signInWithPassword({email:email,password:password});
-    if(result.error){message.textContent='登录失败：请检查邮箱和密码，或确认该账号已在 Supabase 中创建。';return;}
+    if(result.error){message.textContent='登录失败：'+(result.error.message||'请检查邮箱和密码，或确认该账号已在 Supabase 中创建。');return;}
     message.textContent='登录成功，正在加载…';
-  }catch(error){console.error(error);message.textContent='登录失败，请检查网络后重试。';}
+  }catch(error){console.error(error);message.textContent='登录失败：'+(error&&error.message?error.message:'请检查网络后重试。');}
   finally{button.disabled=false;}
 });
-supabaseClient.auth.onAuthStateChange(function(event,session){if(session&&event==='SIGNED_IN'){initializeMapping().catch(function(e){console.error(e);showAuthGate('加载失败：请确认数据库权限和 mapping API 设置。');});}});
-initializeMapping().catch(function(e){console.error(e);showAuthGate('连接数据库失败：请检查 Supabase schema、API 设置和成员权限。');});
+function showMappingInitError(error){
+  console.error('Mapping 初始化失败',error);
+  showAuthGate('加载失败：'+((error&&error.message)||'请检查数据库权限和 mapping API 设置。'));
+}
+supabaseClient.auth.onAuthStateChange(function(event,session){
+  if((event==='INITIAL_SESSION'||event==='SIGNED_IN')&&session&&!mappingReady){
+    setTimeout(function(){initializeMapping().catch(showMappingInitError);},0);
+  }else if(event==='INITIAL_SESSION'&&!session){
+    setTimeout(function(){showAuthGate();},0);
+  }else if(event==='SIGNED_OUT'){
+    mappingReady=false;
+    if(mappingChannel){var oldChannel=mappingChannel;mappingChannel=null;setTimeout(function(){supabaseClient.removeChannel(oldChannel);},0);}
+    setTimeout(function(){showAuthGate();},0);
+  }
+});
 </script>
 </body>
 </html>
